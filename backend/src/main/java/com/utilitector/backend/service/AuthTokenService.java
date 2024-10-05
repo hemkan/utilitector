@@ -1,6 +1,6 @@
-package com.utilitecor.backend.service;
+package com.utilitector.backend.service;
 
-import com.utilitecor.backend.entity.User;
+import com.utilitector.backend.entity.User;
 import org.springframework.stereotype.Service;
 
 @Service

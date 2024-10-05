@@ -1,8 +1,7 @@
-package com.utilitecor.backend.mongo;
+package com.utilitector.backend.mongo;
 
-import com.utilitecor.backend.entity.User;
+import com.utilitector.backend.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 import java.util.Optional;
 

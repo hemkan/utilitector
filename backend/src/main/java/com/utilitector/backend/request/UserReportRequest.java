@@ -1,4 +1,4 @@
-package com.utilitecor.backend.request;
+package com.utilitector.backend.request;
 
 import lombok.Data;
 

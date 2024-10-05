@@ -1,13 +1,12 @@
-package com.utilitecor.backend.service;
+package com.utilitector.backend.service;
 
 import java.util.List;
 
+import com.utilitector.backend.entity.UserReport;
+import com.utilitector.backend.repository.UserReportRepository;
+import com.utilitector.backend.response.UserReportResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.utilitecor.backend.entity.UserReport;
-import com.utilitecor.backend.repository.UserReportRepository;
-import com.utilitecor.backend.response.UserReportResponse;
 
 @Service
 public class UserReportService {

@@ -1,6 +1,7 @@
-package com.utilitecor.backend.entity;
+package com.utilitector.backend.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,4 +17,6 @@ public class UserReport {
     private String type;
 
     private String description;
+    
+    private String location; //TODO
 }

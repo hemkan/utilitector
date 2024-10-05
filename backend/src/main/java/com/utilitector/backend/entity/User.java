@@ -1,4 +1,4 @@
-package com.utilitecor.backend.entity;
+package com.utilitector.backend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

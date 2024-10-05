@@ -1,4 +1,4 @@
-package com.utilitecor.backend.response;
+package com.utilitector.backend.response;
 
 import lombok.Data;
 

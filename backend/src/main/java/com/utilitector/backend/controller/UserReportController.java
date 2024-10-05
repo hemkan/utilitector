@@ -1,4 +1,4 @@
-package com.utilitecor.backend.controller;
+package com.utilitector.backend.controller;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.utilitecor.backend.response.UserReportResponse;
-import com.utilitecor.backend.service.UserReportService;
+import com.utilitector.backend.response.UserReportResponse;
+import com.utilitector.backend.service.UserReportService;
 
 
 @RestController

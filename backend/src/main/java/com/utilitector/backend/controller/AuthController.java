@@ -1,8 +1,8 @@
-package com.utilitecor.backend.controller;
+package com.utilitector.backend.controller;
 
-import com.utilitecor.backend.request.UserLoginRequest;
-import com.utilitecor.backend.response.UserLoginResponse;
-import com.utilitecor.backend.service.UserAuthService;
+import com.utilitector.backend.request.UserLoginRequest;
+import com.utilitector.backend.response.UserLoginResponse;
+import com.utilitector.backend.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

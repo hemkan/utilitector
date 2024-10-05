@@ -1,3 +1,3 @@
-package com.utilitecor.backend.response;
+package com.utilitector.backend.response;
 
 public record UserLoginResponse(String authentication) {};

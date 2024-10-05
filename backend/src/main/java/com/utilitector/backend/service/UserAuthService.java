@@ -1,7 +1,7 @@
-package com.utilitecor.backend.service;
+package com.utilitector.backend.service;
 
-import com.utilitecor.backend.mongo.UserRepository;
-import com.utilitecor.backend.response.UserLoginResponse;
+import com.utilitector.backend.mongo.UserRepository;
+import com.utilitector.backend.response.UserLoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
