@@ -9,8 +9,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @SpringBootApplication
 @EnableMongoRepositories
 public class UtilitectorBackendApplication {
-	@Autowired
-	public UserRepository USERS;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(UtilitectorBackendApplication.class, args);
