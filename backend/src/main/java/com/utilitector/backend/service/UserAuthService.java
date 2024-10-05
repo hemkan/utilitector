@@ -1,6 +1,6 @@
 package com.utilitector.backend.service;
 
-import com.utilitector.backend.mongo.UserRepository;
+import com.utilitector.backend.repository.UserRepository;
 import com.utilitector.backend.response.UserLoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

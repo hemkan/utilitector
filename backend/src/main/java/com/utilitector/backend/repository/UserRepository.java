@@ -1,4 +1,4 @@
-package com.utilitector.backend.mongo;
+package com.utilitector.backend.repository;
 
 import com.utilitector.backend.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
