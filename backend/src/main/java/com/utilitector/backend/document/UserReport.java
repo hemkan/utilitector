@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Document("userreports")
+@Document("UserReports")
 @Data
 public class UserReport {
     @Id
@@ -16,4 +16,6 @@ public class UserReport {
     private String description;
     
     private String location; //TODO
+    
+    
 }

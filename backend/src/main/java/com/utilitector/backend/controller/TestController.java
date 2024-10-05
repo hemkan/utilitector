@@ -1,5 +1,7 @@
 package com.utilitector.backend.controller;
 
+import com.utilitector.backend.logic.map.Clustering;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.utilitector.backend.document.TestData;
@@ -28,4 +30,11 @@ public class TestController {
         return ResponseEntity.ok(response);
     }
     
+    @Autowired private Clustering cl;
+    
+    @GetMapping("/cluster")
+    public ResponseEntity<TestDataResponse> posss() {
+        cl.doSparkThing();
+        return null;
+    }
 }
