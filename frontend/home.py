@@ -62,6 +62,7 @@ if st.session_state.show_login:
         # authenticator.experimental_guest_login('Login with Microsoft',
         #                                     provider='microsoft',
         #                                     oauth2=config['oauth2'])
+
     except LoginError as e:
         st.error(e)
 

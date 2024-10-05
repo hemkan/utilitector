@@ -37,12 +37,15 @@ if st.session_state.get("form"):
 
     name = st.text_input("Name")
     address = st.text_input("Address")
-    type = st.selectbox("Type", ["Electricity", "Water", "Gas"])
+    type = st.selectbox("Type", ["Electricity", "Water", "Gas", "Internet", "Sewage"])
     description = st.text_area("Description")
     
     if st.button("Submit"):
-        st.write("Report submitted successfully")
-        st.write(f"Name: {name}")
-        st.write(f"Address: {address}")
-        st.write(f"Type: {type}")
-        st.write(f"Description: {description}")
+        if not name or not address or not type or not description:
+            st.error("Please fill out all fields.")
+        else:
+            st.write("Report submitted successfully")
+            st.write(f"Name: {name}")
+            st.write(f"Address: {address}")
+            st.write(f"Type: {type}")
+            st.write(f"Description: {description}")
