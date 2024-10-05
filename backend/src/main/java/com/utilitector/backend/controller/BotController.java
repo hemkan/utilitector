@@ -11,8 +11,6 @@ import com.utilitector.backend.request.BotMessageRequest;
 import com.utilitector.backend.response.BotChatResponse;
 import com.utilitector.backend.response.BotMessageResponse;
 import com.utilitector.backend.service.BotService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -31,11 +29,6 @@ public class BotController {
         BotMessageResponse messageResponse = new BotMessageResponse();
         messageResponse.setContent(messageReq.getContent() + " is what you sent");
         return ResponseEntity.ok(messageResponse);
-    }
-
-    @GetMapping("/history/{id}")
-    public ResponseEntity<String> getMessageHistory(@PathVariable("id") Long id) {
-        return ResponseEntity.ok("hello world");
     }
     
 }
