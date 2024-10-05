@@ -56,7 +56,7 @@ if st.session_state.get("agent"):
             st.session_state.messages.append(f"You: {user_message}")
             message = json.dumps({"id": st.session_state.chat_id, "content": user_message})
             # st.write(message)
-            response = requests.post("http://localhost:8080/bot/message", data=message, headers={"Content-Type": "application/json"})
+            response = requests.post("http://localhost:8080/api/bot/message", data=message, headers={"Content-Type": "application/json"})
             st.session_state.messages.append(response.json()["content"])
             st.session_state.user_input = ""
 
@@ -84,7 +84,7 @@ if st.session_state.get("form"):
         st.write(report_json)
 
         # TODO: endpoint w report_json
-        response = requests.post("http://localhost:8080/report/submit", data=report_json, headers={"Content-Type": "application/json"})
+        response = requests.post("http://localhost:8080/api/report/submit", data=report_json, headers={"Content-Type": "application/json"})
         st.write(response)
 
 
