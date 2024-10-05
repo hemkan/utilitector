@@ -20,13 +20,16 @@ st.set_page_config(
 )
 
 st.write("# Welcome to Utilitector!")
-st.navigation(postion='hidden')
+# st.navigation(postion='hidden')
 
 # Initialize states to track which widget shows up
 if 'show_login' not in st.session_state:
     st.session_state.show_login = False
 if 'show_register' not in st.session_state:
     st.session_state.show_register = False
+
+if st.button('File a Report'):
+    st.switch_page('pages/report.py')
 
 # Login and register buttons
 if st.button('Login'):
@@ -49,17 +52,23 @@ authenticator = stauth.Authenticate(
 if st.session_state.show_login:
     # Login widget
     try:
-        authenticator.login()
+        authenticator.experimental_guest_login('Login with Google',
+                                            provider='google',
+                                            oauth2=config['oauth2'])
+        authenticator.experimental_guest_login('Login with Microsoft',
+                                            provider='microsoft',
+                                            oauth2=config['oauth2'])
     except LoginError as e:
         st.error(e)
 
     # TODO: Setup dashboard after login
     if st.session_state["authentication_status"]:
-        st.write('___')
-        authenticator.logout()
-        st.write(f'Welcome *{st.session_state["name"]}*')
-        st.title('Some content')    
-        st.write('___')
+        st.switch_page('pages/dashboard.py')
+        # st.write('___')
+        # authenticator.logout()
+        # st.write(f'Welcome *{st.session_state["name"]}*')
+        # st.title('Some content')    
+        # st.write('___')
     elif st.session_state["authentication_status"] is False:
         st.error('Username/password is incorrect')
 
