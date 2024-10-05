@@ -30,5 +30,5 @@ public class BotController {
         messageResponse.setContent(messageReq.getContent() + " is what you sent");
         return ResponseEntity.ok(messageResponse);
     }
-    
+
 }
