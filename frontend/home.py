@@ -22,6 +22,10 @@ st.set_page_config(
 st.write("# Welcome to Utilitector!")
 # st.navigation(postion='hidden')
 
+# Create an image that is the tagline (Only way to change font size)
+Empower = '<p style="font-family:sans-serif; color:White; font-size: 56px;">Empower Your Community!</p>'
+st.markdown(Empower, unsafe_allow_html=True)
+
 # Initialize states to track which widget shows up
 if 'show_login' not in st.session_state:
     st.session_state.show_login = False
