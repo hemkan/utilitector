@@ -15,8 +15,8 @@ public class UserAuthService {
 	@Autowired
 	private AuthTokenService authTokenService;
 	
-	public Optional<UserLoginResponse> logInUser(String username, String passwordPlaintext) {
-		return userRepository.findUserByUsernameAndPasswordHash(username, passwordPlaintext) // TODO hash password i guess, idk if anyone's gonna check
+	public Optional<UserLoginResponse> logInUser(String authSub) {
+		return userRepository.findCredentialByAuthSub(authSub)
 		                     .map(authTokenService::makeAuthToken)
 		                     .map(UserLoginResponse::new);
 	}

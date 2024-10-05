@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface CredentialRepository extends MongoRepository<Credential, Long> {
 	
 //	@Query("{username:'?0', passwordHash: '?1'}")
-	Optional<Credential> findUserByUsernameAndPasswordHash(String username, String passwordHash);
+	Optional<Credential> findCredentialByAuthSub(String authSub);
 }

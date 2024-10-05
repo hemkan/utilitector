@@ -5,13 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Document("credentials")
+@Document("testdata")
 @Data
-public class Credential {
-	@Id
-	private Long id;
-	
-	private String authSub;
-	
-	private String email;
+public class TestData {
+    private String text;
 }

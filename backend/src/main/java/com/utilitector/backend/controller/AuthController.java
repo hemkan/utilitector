@@ -17,7 +17,7 @@ public class AuthController {
 	
 	@PostMapping("")
 	public ResponseEntity<UserLoginResponse> onLoginRequest(@RequestBody UserLoginRequest request) {
-		return authService.logInUser(request.getUsername(), request.getPassword())
+		return authService.logInUser(request.getAuthSub())
 		                  .map(ResponseEntity::ok)
 		                  .orElseGet(() -> ResponseEntity.notFound().build());
 	}
