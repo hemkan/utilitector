@@ -25,6 +25,8 @@ if st.button("Help from an Agent"):
 
 if st.session_state.get("agent"):
     st.write("# Talk to Despair")
+    
+    # message history
     st.write("Despair: Hello there! I'm Despair. How can I help you today?")
     for message in st.session_state.messages:
         st.write(message)
@@ -32,35 +34,38 @@ if st.session_state.get("agent"):
     user_message = st.text_input("Message")
 
     if st.button("Send"):
-        if user_message:
+        if user_message != "":
             st.session_state.messages.append(f"You: {user_message}")
+            message = json.dumps({"message": user_message})
+            st.write(message)
             # TODO: endpoint for get response to message
             response = "Despair: Thank you for your message!"
             st.session_state.messages.append(response)
 
+            st.session_state.user_input = ""
+
+
 if st.session_state.get("form"):
     st.write("# File a Report")
 
-    name = st.text_input("Name")
-    address = st.text_input("Address")
+    location = st.text_input("Location")
     type = st.selectbox("Type", ["Electricity", "Water", "Gas"])
     description = st.text_area("Description")
     
     if st.button("Submit"):
         st.write("Report submitted successfully")
-        st.write(f"Name: {name}")
-        st.write(f"Address: {address}")
+        st.write(f"Location: {location}")
         st.write(f"Type: {type}")
         st.write(f"Description: {description}")
 
         report_data = {
-            "name": name,
-            "address": address,
+            "location": location,
             "type": type,
             "description": description
         }
 
         report_json = json.dumps(report_data)
+        st.write(report_json)
 
         # TODO: endpoint w report_json
 
