@@ -4,10 +4,10 @@ spring:
       'file:./secrets.yml'
   application:
     name: 'Utilitector Backend'
-  jpa:
-    database: postgresql
+#  jpa:
+#    database: postgresql
   data:
     mongodb:
-      host: 'mongodb+srv://utilitector.4fknr.mongodb.net/?retryWrites=true&w=majority&appName=Utilitector'
+      database: main
 server:
   port: 8080

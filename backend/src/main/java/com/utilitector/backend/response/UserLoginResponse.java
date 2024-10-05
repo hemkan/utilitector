@@ -1,3 +1,3 @@
 package com.utilitector.backend.response;
 
-public record UserLoginResponse(String authentication) {};
+public record UserLoginResponse(String authentication) {}

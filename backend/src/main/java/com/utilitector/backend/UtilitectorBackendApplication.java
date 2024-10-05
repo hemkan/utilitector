@@ -1,5 +1,6 @@
 package com.utilitector.backend;
 
+import com.utilitector.backend.mongo.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;

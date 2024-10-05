@@ -1,11 +1,10 @@
 package com.utilitector.backend.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.utilitector.backend.entity.UserReport;
+import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserReportRepository extends JpaRepository<UserReport, Long> {
-    
+public interface UserReportRepository extends MongoRepository<UserReport, Long> {
+    int countAllByDescription(String description);
 }
