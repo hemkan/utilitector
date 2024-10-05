@@ -12,6 +12,4 @@ public class Credential {
 	private Long id;
 	
 	private String authSub;
-	
-	private String email;
 }

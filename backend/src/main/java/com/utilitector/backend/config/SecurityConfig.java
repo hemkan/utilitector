@@ -13,11 +13,11 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            //.authorizeHttpRequests(authorize -> authorize
-            //    .anyRequest().authenticated()
-            //)
-            //.oauth2Login(Customizer.withDefaults())
-            .csrf((c) -> c.disable()); // REMOVE THIS LINE IN PROD
+            .authorizeHttpRequests(authorize -> authorize
+                .anyRequest().authenticated()
+            )
+            .oauth2Login(Customizer.withDefaults());
+            //.csrf((c) -> c.disable()); // REMOVE THIS LINE IN PROD
         return http.build();
     }
 }

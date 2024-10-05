@@ -40,7 +40,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-//	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.7'
+	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.7'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 }
 
