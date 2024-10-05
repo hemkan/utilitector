@@ -1,5 +1,12 @@
 package com.utilitector.backend.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import com.utilitector.backend.logic.map.Clustering;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,12 +36,21 @@ public class TestController {
         response.setText(savedData.getText());
         return ResponseEntity.ok(response);
     }
-    
-    @Autowired private Clustering cl;
-    
-    @GetMapping("/cluster")
-    public ResponseEntity<TestDataResponse> posss() {
-        cl.doSparkThing();
-        return null;
+
+    @GetMapping("/test")
+    public ResponseEntity<List<TestDataResponse>> getAllTestData() {
+        return ResponseEntity.ok(testRepo.findAll().stream().map((t) -> {
+            TestDataResponse res = new TestDataResponse();
+            res.setText(t.getText());
+            return res;
+        }).toList());
     }
+	
+	@Autowired private Clustering cl;
+	
+	@GetMapping("/cluster")
+	public ResponseEntity<TestDataResponse> posss() {
+		cl.doSparkThing();
+		return null;
+	}
 }
