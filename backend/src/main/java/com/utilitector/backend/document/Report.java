@@ -5,12 +5,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Document("userreports")
+@Document("reports")
 @Data
-public class UserReport {
-    @Id
-    private Long id;
-
+public class Report {
     private String type;
 
     private String description;
