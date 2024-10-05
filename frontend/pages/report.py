@@ -2,13 +2,13 @@ import streamlit as st
 import json
 import requests 
 # import googlemaps
-from streamlit_geolocation import streamlit_geolocation
+# from streamlit_geolocation import streamlit_geolocation
 
 # with open('../pages/config.yaml', 'r', encoding='utf-8') as file:
 #     config = yaml.load(file, Loader=yaml.SafeLoader)
 
 # gmaps = googlemaps.Client(config['google']['api_key'])
-location = streamlit_geolocation()
+# location = streamlit_geolocation()
 
 if 'form' not in st.session_state:
     st.session_state.form = False
@@ -33,9 +33,11 @@ if st.button("Help from an Agent"):
     st.session_state.form = False
 
     # TODO: endpoint for get a chat_id
-    st.session_state.chat_id = requests.post("http://localhost:8080/bot/new-chat").json()["id"]
+    st.session_state.chat_id = requests.post("http://localhost:8080/api/bot/new-chat").json()["id"]
+    st.session_state.first_message = requests.post("http://localhost:8080/api/bot/new-chat").json()["firstMessage"]
     # chat_id = requests.post("http://localhost:8080/bot/new-chat").json()["id"]
     st.write(st.session_state.chat_id)
+    st.write(st.session_state.first_message)
 
 
 
@@ -43,7 +45,7 @@ if st.session_state.get("agent"):
     st.write("# Talk to Despair")
     
     # message history
-    st.write("Despair: Hello there! I'm Despair. How can I help you today?")
+    st.write(f"Despair: {st.session_state.first_message}")
     for message in st.session_state.messages:
         st.write(message)
 
