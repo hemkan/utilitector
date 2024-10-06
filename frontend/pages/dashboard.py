@@ -41,6 +41,13 @@ colors = {
     "Tornado": [0, 255, 0],
     "Hurricane": [255, 0, 255],
     "Other": [0, 255, 255],
+    "Internet": [120,89,0],
+    "Tremors": [10,78,98],
+    "Electricity": [45,97,100],
+    "Sewage": [0,68,9],
+    "Gas": [87,90,90],
+
+    #"Internet", "Water", "Tremors", "Electricity", "Sewage", "Gas", "Other"
 }
 
 chart_data['color'] = chart_data['type'].apply(lambda x: colors[x])
@@ -66,7 +73,10 @@ st.pydeck_chart(
                 data=chart_data,
                 get_position="[lon, lat]",
                 get_fill_color="color",
-                get_radius=200, 
+                opacity = .05,
+                width = 500,
+                get_height = "height",
+                get_radius=2000, 
                 pickable=True,
             ),
         ],
