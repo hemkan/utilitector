@@ -5,9 +5,9 @@ import pydeck as pdk
 
 from streamlit_cookies_controller import CookieController
 controller = CookieController()
-st.session_state.storeduser = controller.get("storeduser")
-if st.session_state.storeduser == None:
-    st.session_state.storeduser = ""
+st.session_state.storedid = controller.get("storedid")
+if st.session_state.storedid == None:
+    st.session_state.storedid = 0
 
 st.session_state.storedtoken = controller.get("storedtoken")
 if st.session_state.storedtoken == None:

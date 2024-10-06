@@ -26,16 +26,16 @@ if 'register' not in st.session_state:
     # add it to the session state
     st.session_state["register"] = True
 
-st.session_state.storeduser = controller.get("storeduser")
-if st.session_state.storeduser == None:
-    st.session_state.storeduser = ""
+st.session_state.storedid = controller.get("storedid")
+if st.session_state.storedid == None:
+    st.session_state.storedid = 0
 
 st.session_state.storedtoken = controller.get("storedtoken")
 if st.session_state.storedtoken == None:
     st.session_state.storedtoken = ""
 
 def savecredentials(user, token):
-    controller.set("storeduser", user)
+    controller.set("storedid", user)
     controller.set("storedtoken", token)
 
 if st.session_state["register"]:
@@ -59,7 +59,7 @@ if st.session_state["register"]:
             st.error("Error attempting to register user. Username is likely taken.")
         else:
             st.success("User created!")
-            savecredentials(response.json()["username"], response.json()["token"])
+            savecredentials(response.json()["id"], response.json()["token"])
     
     if st.button('Login Instead'):
         st.session_state["login"] = True
@@ -78,7 +78,7 @@ if st.session_state["login"]:
             st.error("Login invalid. Check your password or make a new account.")
         else:
             st.success("Login successful!")
-            savecredentials(response.json()["username"], response.json()["token"])
+            savecredentials(response.json()["id"], response.json()["token"])
     if st.button('Register Instead'):
         st.session_state["register"] = True
         st.session_state["login"] = False
