@@ -1,5 +1,6 @@
 package com.utilitector.backend.request;
 
+import com.utilitector.backend.data.GeolocationCoordinates;
 import lombok.Data;
 
 @Data
@@ -8,5 +9,5 @@ public class ReportRequest {
 
     private String description;
 
-    private String location;
+    private GeolocationCoordinates location;
 }

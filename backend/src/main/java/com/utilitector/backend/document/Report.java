@@ -1,5 +1,6 @@
 package com.utilitector.backend.document;
 
+import com.utilitector.backend.data.GeolocationCoordinates;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -11,5 +12,5 @@ public class Report {
 
     private String description;
     
-    private String location; //TODO
+    private GeolocationCoordinates location; //TODO
 }

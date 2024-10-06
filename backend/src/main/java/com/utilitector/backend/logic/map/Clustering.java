@@ -1,12 +1,18 @@
 package com.utilitector.backend.logic.map;
 
 import com.utilitector.backend.data.GeolocationCoordinates;
+import com.utilitector.backend.document.Report;
+import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.ml.clustering.KMeans;
 import org.apache.spark.ml.clustering.KMeansModel;
+import org.apache.spark.ml.feature.VectorAssembler;
+import org.apache.spark.ml.param.Param;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.catalyst.ScalaReflection;
+import org.apache.spark.sql.types.StructType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,19 +35,24 @@ public class Clustering {
 		Dataset<Row> reportData = spark.read()
 		                               .format("mongodb")
 		                               .option("database", "main")
-		                               .option("collection", "UserReports")
+		                               .option("collection", "reports")
 		                               .load();
+		spark.stop();
 		
-		var reportLocations = reportData.select("location")
-		                                .as(Encoders.bean(GeolocationCoordinates.class));
+		var reportLocations = reportData.as(Encoders.bean(Report.class))
+		                                .map((MapFunction<Report, GeolocationCoordinates>) Report::getLocation, Encoders.bean(GeolocationCoordinates.class));
 		
-		System.out.println(reportLocations);
+		var transformer = new VectorAssembler().setInputCols(new String[] {"latitude", "longitude"}).setOutputCol("features");
+		Dataset<Row> transformed = transformer.transform(reportLocations);
 		
-		System.exit(0);
+		System.out.println(transformed);
 		
 		KMeans kMeans = new KMeans().setK(3).setSeed(1L);
-		KMeansModel model = kMeans.fit(reportData);
 		
-		Dataset<Row> transform = model.transform(reportData);
+		KMeansModel model = kMeans.fit(transformed);
+		
+		Dataset<Row> transform = model.transform(transformed);
+		
+		System.out.println(transform);
 	}
 }
