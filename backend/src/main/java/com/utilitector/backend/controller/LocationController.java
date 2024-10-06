@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/location")
 public class LocationController {
-
     @Autowired private ReportService reportService;
 
     @GetMapping("/incidents")

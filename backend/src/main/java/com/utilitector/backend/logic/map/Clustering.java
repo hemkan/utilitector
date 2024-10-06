@@ -23,6 +23,8 @@ import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,6 +48,12 @@ public class Clustering {
 		                    .getOrCreate();
 	}
 	
+	@CacheEvict({Constants.CACHE_CLUSTERS, Constants.CACHE_CIRCLE})
+	public void refresh() {
+		// NO-OP
+	}
+	
+	@Cacheable(Constants.CACHE_CLUSTERS)
 	public List<List<DoublePoint>> getAllClusters() {
 		Dataset<Row> reportData = getAllReports();
 		
@@ -73,6 +81,7 @@ public class Clustering {
 		            .load();
 	}
 	
+	@Cacheable(Constants.CACHE_CIRCLE)
 	public EnclosingBall<Euclidean2D, Vector2D> getCircleForCluster(List<DoublePoint> c) {
 		List<Vector2D> list = c.stream().map(p -> new Vector2D(p.getPoint())).toList();
 		var welzl = new WelzlEncloser<>(0.01, new DiskGenerator());

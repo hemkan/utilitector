@@ -1,10 +1,28 @@
 package com.utilitector.backend.controller;
 
+import com.utilitector.backend.mongo.UserDataRepository;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/dashboard")
 public class DashboardController {
-    
+	@Autowired
+	private UserDataRepository repo;
+	
+//    @PostMapping("/subscriptions")
+//	public void dothing(@RequestBody ObjectId id) {
+//	    return new PAcketthing(repo.getUserDataById(id).getSubscribedIncidents())
+//    }
+//
+//	@GetMapping("/subscriptions/{id}/force")
+//	public void dofff(@PathVariable int id) {
+//		dothing(id)
+//	}
 }

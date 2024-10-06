@@ -29,5 +29,4 @@ public class BotController {
         BotMessageResponse messageResponse = botService.sendMessage(messageReq);
         return ResponseEntity.ok(messageResponse);
     }
-
 }
