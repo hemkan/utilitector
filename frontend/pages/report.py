@@ -17,17 +17,21 @@ for (state_name, default) in (
 	if state_name not in st.session_state:
 		st.session_state[state_name] = default
 
-
-
 def getCountries():
 	return pycountry.countries
-
+	
 
 def getSubdivisions():
 	return pycountry.subdivisions
 
+@st.cache_data
+def cached_countrySorted():
+	l = sorted([el.name for el in iter(getCountries())])
+	l.remove('United States')
+	l.insert(0, 'United States')
+	return l
 
-@st.fragment
+
 def frag_formComponent():
 	st.write("# File a Report")
 	st.subheader("Location")
@@ -38,26 +42,25 @@ def frag_formComponent():
 	
 	@st.fragment
 	def frag_stateProvince():
-		if st.session_state.loc_country:
-			country = getCountries().get(name=st.session_state.loc_country)
-			print(country)
-			subdivisions: set[any] = getSubdivisions().get(country_code=country.country_code)
-			if subdivisions:
-				return st.selectbox(
-					"State/Province",
-					options=[el.name for el in subdivisions],
-					key='loc_stateprovince',
-					label_visibility=False
-				)
+		country = getCountries().get(name=st.session_state.loc_country)
+		print(country)
+		subdivisions: set[any] = getSubdivisions().get(country_code=country.alpha_2)
+		if subdivisions:
+			print(subdivisions)
+			return st.selectbox(
+				"State/Province",
+				options=sorted([el.name for el in subdivisions]),
+				key='loc_stateprovince'
+			)
 	
-	
-	province = frag_stateProvince()
+	province = frag_stateProvince() if (st.session_state.loc_country) else ""
 	
 	country = st.selectbox(
 		"Country",
-		options=[el.name for el in iter(getCountries())],
-		placeholder="No Country Selected",
+		options=cached_countrySorted(),
 		key='loc_country'
+		# index=0,
+		# placeholder="United States"
 	)
 	
 	# # TODO: ask user for enter location manually (google maps/api for similar format) or use geolocation
@@ -66,7 +69,7 @@ def frag_formComponent():
 	report_type = st.selectbox("Type", ["Electricity", "Water", "Gas"])
 	description = st.text_area("Description")
 	
-	if st.button("Submit"):
+	def onSubmit(street, city, province, country):
 		location = getLatLng(street, city, province, country)
 		
 		report_data = {
@@ -79,10 +82,11 @@ def frag_formComponent():
 		st.write(report_json)
 		
 		# TODO: endpoint w report_json
-		response = requests.post("http://localhost:8080/api/report/submit", data=report_json,
-								 headers={"Content-Type": "application/json"})
+		# response = requests.post("http://localhost:8080/api/report/submit", data=report_json,
+		# 						 headers={"Content-Type": "application/json"})
 		st.write(response)
-		st.write('this should rerun here')
+	
+	st.button("Submit", on_click=onSubmit, args=(street, city, province, country))
 
 
 
@@ -98,11 +102,11 @@ def getLatLng(street, city, state_province, country):
 	geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
 	loc: geopy.Location = geocode(street + ", "
 								  + city + ", "
-								  + (state_province + ", " if state_province else "")
+								  + ((state_province + ", ") if state_province else "")
 								  + country)
 	
 	print(loc.point)  # TODO remove after debug
-	return loc.point
+	return {'latitude': loc.latitude, 'longitude': loc.longitude}
 
 
 
