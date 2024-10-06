@@ -13,7 +13,6 @@ import requests
 
 st.set_page_config(layout="wide")
 
-st.set_page_config(layout="wide")
 
 
 if 'loc_country' not in st.session_state:
@@ -125,7 +124,7 @@ st.pydeck_chart(
                 opacity = .05,
                 width = 500,
                 get_height = "height",
-                get_radius=2000, 
+                get_radius=20,
                 pickable=True,
             ),
         ],
