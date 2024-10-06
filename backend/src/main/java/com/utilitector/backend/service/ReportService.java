@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
+import org.springframework.stereotype.Service;
+
 import com.utilitector.backend.document.Report;
 import com.utilitector.backend.mongo.ReportRepository;
 import com.utilitector.backend.request.LocationIncidentRequest;
+import com.utilitector.backend.request.NearReportRequest;
 import com.utilitector.backend.request.ReportRequest;
 import com.utilitector.backend.response.LocationIncidentResponse;
+import com.utilitector.backend.response.NearReportResponse;
 import com.utilitector.backend.response.ReportResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ReportService {
@@ -59,5 +65,18 @@ public class ReportService {
         }
 
         return incidentResponses;
+    }
+
+    public List<NearReportResponse> getNearReports(NearReportRequest req) {
+        Point point = new Point(req.getLocation().getLongitude(), req.getLocation().getLatitude());
+        Distance dist = new Distance(req.getDistance(), Metrics.MILES);
+        List<Report> near = reportRepo.findAllByLocationNear(point, dist);
+        List<NearReportResponse> nearRes = near.stream().map((r) -> {
+            NearReportResponse res = new NearReportResponse();
+            res.setLocation(r.getLocation());
+            res.setType(r.getType());
+            return res;
+        }).toList();
+        return nearRes;
     }
 }

@@ -42,6 +42,7 @@ public class Clustering {
 		                    .master("local")
 		                    .config("spark.mongodb.read.connection.uri", MONGO_URL)
 		                    .config("spark.mongodb.write.connection.uri", MONGO_URL)
+							.config("spark.driver.host", "localhost")
 		                    .getOrCreate();
 	}
 	
