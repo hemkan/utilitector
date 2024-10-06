@@ -19,6 +19,10 @@ REDIRECT_URI = config['auth0']['redirect_uri']
 AUTH0_CALLBACK_URL = f"{REDIRECT_URI}?code={{code}}&state={{state}}"
 AUTH0_LOGOUT_URL = f"https://{AUTH0_DOMAIN}/v2/logout"
 
+# for clicker
+def click_button():
+    st.session_state.button = not st.session_state.button
+
 st.set_page_config(
     page_title="Utilitector",
     page_icon="",
@@ -54,7 +58,8 @@ if st.session_state["login"]:
     if st.button('Register'):
         st.session_state["login"] = False
         st.session_state["register"] = True
-
+        st.rerun()
+        
 
 if st.session_state["register"]:
     st.write("## Register")
@@ -73,3 +78,4 @@ if st.session_state["register"]:
     if st.button('Login'):
         st.session_state["login"] = True
         st.session_state["register"] = False
+        st.rerun()

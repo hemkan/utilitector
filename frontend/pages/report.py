@@ -59,6 +59,7 @@ if st.session_state.get("agent"):
             response = requests.post("http://localhost:8080/api/bot/message", data=message, headers={"Content-Type": "application/json"})
             st.session_state.messages.append(response.json()["content"])
             st.session_state.user_input = ""
+            st.rerun()
 
 
 if st.session_state.get("form"):
