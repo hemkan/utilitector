@@ -3,6 +3,16 @@ import streamlit as st
 from geopy import Nominatim, Location
 from geopy.extra.rate_limiter import RateLimiter
 
+from streamlit_cookies_controller import CookieController
+controller = CookieController()
+st.session_state.storedid = controller.get("storedid")
+if st.session_state.storedid == None:
+    st.session_state.storedid = 0
+
+st.session_state.storedtoken = controller.get("storedtoken")
+if st.session_state.storedtoken == None:
+    st.session_state.storedtoken = ""
+
 
 @st.fragment
 def locationForm():

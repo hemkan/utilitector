@@ -42,5 +42,4 @@ public class ReportController {
     public ResponseEntity<List<NearReportResponse>> getNearReports(@RequestBody NearReportRequest req) {
         return ResponseEntity.ok(reportService.getNearReports(req));
     }
-    
 }

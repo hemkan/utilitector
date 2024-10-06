@@ -1,27 +1,18 @@
+import json
 import yaml
 import streamlit as st
 import requests
+import hashlib
 from urllib.parse import urlencode
 import webbrowser
-from auth0.authentication import Database
-from auth0.authentication import GetToken
+import base64
+from streamlit_cookies_controller import CookieController
 
+controller = CookieController()
 
 # Load config file
 with open('config.yaml', 'r', encoding='utf-8') as file:
     config = yaml.load(file, Loader=yaml.SafeLoader)
-
-# Auth0 Configuration
-AUTH0_DOMAIN = config['auth0']['domain']
-CLIENT_ID = config['auth0']['client_id']
-CLIENT_SECRET = config['auth0']['client_secret']
-REDIRECT_URI = config['auth0']['redirect_uri']
-AUTH0_CALLBACK_URL = f"{REDIRECT_URI}?code={{code}}&state={{state}}"
-AUTH0_LOGOUT_URL = f"https://{AUTH0_DOMAIN}/v2/logout"
-
-# for clicker
-def click_button():
-    st.session_state.button = not st.session_state.button
 
 st.set_page_config(
     page_title="Utilitector",
@@ -35,44 +26,41 @@ if 'register' not in st.session_state:
     # add it to the session state
     st.session_state["register"] = True
 
+st.session_state.storedid = controller.get("storedid")
+if st.session_state.storedid == None:
+    st.session_state.storedid = 0
 
-# Register button
+st.session_state.storedtoken = controller.get("storedtoken")
+if st.session_state.storedtoken == None:
+    st.session_state.storedtoken = ""
 
-# if st.button('Register'):
-#     st.session_state["register"] = True
-#     st.session_state["login"] = False
-
-if st.session_state["login"]:
-    st.write("## Login")
-    st.session_state["register"] = False
-    login = st.text_input('Email' , key='Login_Email')
-    password = st.text_input('Password', type='password', key='Login_Password')
-    if st.button('Continue'):
-        # Authenticate user
-        token = GetToken(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
-        token.login(username=login, password=password, realm='Username-Password-Authentication')
-        st.success('User authenticated successfully')
-        st.session_state["authenticated"] = True
-    st.write("Don't Have An Account?")
-
-
-    if st.button('Register'):
-        st.session_state["login"] = False
-        st.session_state["register"] = True
-        st.rerun()
-        
+def savecredentials(user, token):
+    controller.set("storedid", user)
+    controller.set("storedtoken", token)
 
 if st.session_state["register"]:
-    st.write("## Register")
-    st.session_state["login"] = False
-    username = st.text_input('Email', key='register_email')
-    pass_word = st.text_input('Password', type='password')
-    if st.button('Continue', key='register_continue'):
-        # Register user
-        token = Database(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
-        token.signup(email=username, password=pass_word, connection='Username-Password-Authentication')
-        st.success('User registered successfully. Please login.')
-
+    username = st.text_input('Username')
+    password = st.text_input('Password', type='password')
+    hasher = hashlib.sha256()
+    hasher.update(password.encode())
+    passwordHash = hasher.digest()
+    passwordHash = base64.b64encode(passwordHash).decode('ascii')
+    register = {
+        "username": username,
+        "passwordHash": passwordHash
+    }
+    register = json.dumps(register)
+    if st.button('Continue'):
+        # Authenticate user
+        response = requests.post("http://localhost:8080/api/auth/register", data=register, headers={
+            "Content-Type": "application/json"
+        })
+        if not response.ok:
+            st.error("Error attempting to register user. Username is likely taken.")
+        else:
+            st.success("User created!")
+            savecredentials(response.json()["id"], response.json()["token"])
+    
     st.write("Already Have An Account?")
     # link to login page
     
@@ -82,3 +70,37 @@ if st.session_state["register"]:
         st.session_state["login"] = True
         st.session_state["register"] = False
         st.rerun()
+    
+#     if st.button('Login Instead'):
+#         st.session_state["login"] = True
+#         st.session_state["register"] = False
+        
+
+    if st.button('Register'):
+        st.session_state["login"] = False
+        st.session_state["register"] = True
+        st.rerun()
+        
+
+
+if st.session_state["login"]:
+    username = st.text_input('Username')
+    password = st.text_input('Password', type='password')
+    if st.button('Continue'):
+        response = requests.post("http://localhost:8080/api/auth/register", data=register, headers={
+            "Content-Type": "application/json"
+        })
+        if not response.ok:
+            st.error("Login invalid. Check your password or make a new account.")
+        else:
+            st.success("Login successful!")
+            savecredentials(response.json()["id"], response.json()["token"])
+    st.write("Don't Have An Account?")
+    # link to register page
+    
+
+    if st.button('Register'):
+        st.session_state["register"] = True
+        st.session_state["login"] = False
+        st.rerun()
+

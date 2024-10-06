@@ -5,6 +5,7 @@ import json
 import pycountry
 from geopy import Nominatim, Location
 from geopy.extra.rate_limiter import RateLimiter
+from streamlit_cookies_controller import CookieController
 
 if 'loc_country' not in st.session_state:
   st.session_state.loc_country = None
@@ -63,6 +64,21 @@ st.write("### Reported Incident Locations")
 
 # # TODO: endpoint for getting UserData.monitoring
 # st.write(f"This map shows the locations of reported incidents in {monitoringLocation}.")
+
+
+
+controller = CookieController()
+st.session_state.storedid = controller.get("storedid")
+if st.session_state.storedid == None:
+    st.session_state.storedid = 0
+
+st.session_state.storedtoken = controller.get("storedtoken")
+if st.session_state.storedtoken == None:
+    st.session_state.storedtoken = ""
+
+
+st.set_page_config(layout="wide")
+
 
 st.pydeck_chart(
     pdk.Deck(

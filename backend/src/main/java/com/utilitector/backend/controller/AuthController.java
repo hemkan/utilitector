@@ -26,5 +26,14 @@ public class AuthController {
         }
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<CredentialResponse> loginUser(@RequestBody CredentialRequest credReq) {
+        CredentialResponse response = authService.loginUser(credReq);
+        if (response == null) {
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok(response);
+    }
     
 }

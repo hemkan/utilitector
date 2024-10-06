@@ -5,11 +5,16 @@ from urllib.parse import urlencode
 import webbrowser
 # from auth0.authentication import Database
 # from streamlit_navigation_bar import st_navbar
+import os
+
+import pages as pg
+
 
 st.set_page_config(initial_sidebar_state="collapsed", page_title="Utilitector")
 
 if 'authenticated' not in st.session_state:
     st.session_state["authenticated"] = False
+
 
 # if st.session_state.get("auth"):
 #     pages = ["Dashboard", "Report", "Logout"]
@@ -20,6 +25,46 @@ if 'authenticated' not in st.session_state:
 # st.write(page)
 
 # page = st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
+
+if st.session_state.get("auth"):
+    pages = ["Dashboard", "Report", "Logout"]
+else:
+    pages = ["Home", "Report", "Get Started"]
+
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+logo_path = os.path.join(parent_dir, "logo.svg")
+
+# styles = {
+#     "nav": {
+#         "background-color": "royalblue",
+#         "justify-content": "left",
+#     },
+#     "img": {
+#         "padding-right": "14px",
+#     },
+#     "span": {
+#         "color": "white",
+#         "padding": "14px",
+#     },
+#     "active": {
+#         "background-color": "white",
+#         "color": "var(--text-color)",
+#         "font-weight": "normal",
+#         "padding": "14px",
+#     }
+# }
+
+# page = st_navbar(
+#     pages,
+#     logo_path=logo_path,
+#     styles=styles,
+# )
+# page = st_navbar(pages)
+# st.write(page)
+
+# if st.session_state.get("auth"):
+#     st.wrte(pages)
+
 # st.write(page)
 
 
@@ -34,6 +79,16 @@ with open('config.yaml', 'r', encoding='utf-8') as file:
 # REDIRECT_URI = config['auth0']['redirect_uri']
 # AUTH0_CALLBACK_URL = f"{REDIRECT_URI}?code={{code}}&state={{state}}"
 # AUTH0_LOGOUT_URL = f"https://{AUTH0_DOMAIN}/v2/logout"
+
+
+
+# functions = {
+#     "Home": pg.show_home,
+#     TDO: show for all nav?
+# }
+# go_to = functions.get(page)
+# if go_to:
+#     go_to()
 
 
 

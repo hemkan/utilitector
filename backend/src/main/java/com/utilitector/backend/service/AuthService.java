@@ -46,6 +46,18 @@ public class AuthService {
         return credResp;
     }
 
+    public CredentialResponse loginUser(CredentialRequest credReq) {
+        Optional<Credential> existingUserOpt = credRepo.findByUsername(credReq.getUsername());
+        if (existingUserOpt.isPresent()) {
+            return null;
+        }
+        
+        CredentialResponse res = new CredentialResponse();
+        res.setId(existingUserOpt.get().getId());
+        res.setToken(existingUserOpt.get().getToken());
+        return res;
+    }
+
     public Boolean isAuthenticatedByToken(Long credId, String token) {
         Optional<Credential> credOpt = credRepo.findById(credId);
         if (credOpt.isEmpty()) {
