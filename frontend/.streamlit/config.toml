@@ -7,6 +7,5 @@ font="sans serif"
 
 [client]
 toolbarMode = "auto"
-showSidebarNavigation = false
 showErrorDetails = false
 
