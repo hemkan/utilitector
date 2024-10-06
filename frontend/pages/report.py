@@ -7,6 +7,8 @@ import streamlit as st
 from geopy.extra.rate_limiter import RateLimiter
 from geopy.geocoders import Nominatim
 
+from py.fragments import locationForm
+
 # initialize session state things
 for (state_name, default) in (
 		('form', False),
@@ -17,51 +19,12 @@ for (state_name, default) in (
 	if state_name not in st.session_state:
 		st.session_state[state_name] = default
 
-def getCountries():
-	return pycountry.countries
-	
 
-def getSubdivisions():
-	return pycountry.subdivisions
-
-@st.cache_data
-def cached_countrySorted():
-	l = sorted([el.name for el in iter(getCountries())])
-	l.remove('United States')
-	l.insert(0, 'United States')
-	return l
 
 
 def frag_formComponent():
 	st.write("# File a Report")
-	st.subheader("Location")
-	
-	street = st.text_input("Street")
-	city = st.text_input("City")
-	
-	
-	@st.fragment
-	def frag_stateProvince():
-		country = getCountries().get(name=st.session_state.loc_country)
-		print(country)
-		subdivisions: set[any] = getSubdivisions().get(country_code=country.alpha_2)
-		if subdivisions:
-			print(subdivisions)
-			return st.selectbox(
-				"State/Province",
-				options=sorted([el.name for el in subdivisions]),
-				key='loc_stateprovince'
-			)
-	
-	province = frag_stateProvince() if (st.session_state.loc_country) else ""
-	
-	country = st.selectbox(
-		"Country",
-		options=cached_countrySorted(),
-		key='loc_country'
-		# index=0,
-		# placeholder="United States"
-	)
+	func_resolveLocation = locationForm()
 	
 	# # TODO: ask user for enter location manually (google maps/api for similar format) or use geolocation
 	# st.selectbox("Location", ["Current Location", ____])
@@ -69,11 +32,9 @@ def frag_formComponent():
 	report_type = st.selectbox("Type", ["Electricity", "Water", "Gas"])
 	description = st.text_area("Description")
 	
-	def onSubmit(street, city, province, country):
-		location = getLatLng(street, city, province, country)
-		
+	def onSubmit():
 		report_data = {
-			"location": location,
+			"location": func_resolveLocation(),
 			"type": report_type,
 			"description": description
 		}
@@ -86,7 +47,7 @@ def frag_formComponent():
 		# 						 headers={"Content-Type": "application/json"})
 		st.write(response)
 	
-	st.button("Submit", on_click=onSubmit, args=(street, city, province, country))
+	st.button("Submit", on_click=onSubmit)
 
 
 
@@ -96,17 +57,6 @@ def frag_formComponent():
 #     config = yaml.load(file, Loader=yaml.SafeLoader)
 # gmaps = googlemaps.Client(config['google']['api_key'])
 # location = streamlit_geolocation()
-
-def getLatLng(street, city, state_province, country):
-	geolocator = Nominatim(user_agent="GTA Lookup")
-	geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
-	loc: geopy.Location = geocode(street + ", "
-								  + city + ", "
-								  + ((state_province + ", ") if state_province else "")
-								  + country)
-	
-	print(loc.point)  # TODO remove after debug
-	return {'latitude': loc.latitude, 'longitude': loc.longitude}
 
 
 
