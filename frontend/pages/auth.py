@@ -76,12 +76,6 @@ if st.session_state["register"]:
 #         st.session_state["register"] = False
         
 
-    if st.button('Register'):
-        st.session_state["login"] = False
-        st.session_state["register"] = True
-        st.rerun()
-        
-
 
 if st.session_state["login"]:
     username = st.text_input('Username')
