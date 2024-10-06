@@ -5,13 +5,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Document("botmessages")
+@Document("botchats")
 @Data
-public class BotMessage {
+public class BotChat {
     @Id
-    private BotMessageId id;
+    private Long id;
 
-    private String content;
-
-    private Boolean madeByBot;
+    private Long nextIndex;
 }

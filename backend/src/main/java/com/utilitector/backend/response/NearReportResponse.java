@@ -1,13 +1,12 @@
-package com.utilitector.backend.request;
+package com.utilitector.backend.response;
 
 import com.utilitector.backend.data.LatitudeLongitude;
+
 import lombok.Data;
 
 @Data
-public class ReportRequest {
+public class NearReportResponse {
     private String type;
-
-    private String description;
 
     private LatitudeLongitude location;
 }

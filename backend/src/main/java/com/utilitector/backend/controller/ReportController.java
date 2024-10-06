@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.utilitector.backend.document.Report;
+import com.utilitector.backend.request.NearReportRequest;
 import com.utilitector.backend.request.ReportRequest;
+import com.utilitector.backend.response.NearReportResponse;
 import com.utilitector.backend.response.ReportResponse;
 import com.utilitector.backend.service.ReportService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +37,10 @@ public class ReportController {
             return ResponseEntity.internalServerError().body(reportResponse);
         return ResponseEntity.ok(reportResponse);
     }
-    
+
+    @PostMapping("/near")
+    public ResponseEntity<List<NearReportResponse>> getNearReports(@RequestBody NearReportRequest req) {
+        return ResponseEntity.ok(reportService.getNearReports(req));
+    }
     
 }

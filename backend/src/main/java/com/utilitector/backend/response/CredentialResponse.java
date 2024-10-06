@@ -3,7 +3,7 @@ package com.utilitector.backend.response;
 import lombok.Data;
 
 @Data
-public class BotChatResponse {
+public class CredentialResponse {
     private Long id;
-    private String firstMessage;
+    private String token;
 }
