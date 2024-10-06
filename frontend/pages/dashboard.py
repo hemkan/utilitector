@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import pydeck as pdk
 import json
-
+from py.fragments import locationForm
 # TODO: initialize this 
 # if st.session_state["authenticated"]:
 #     st.write("## Welcome to the Dashboard")
@@ -96,3 +96,6 @@ for index, row in chart_data.iterrows():
         st.write(f"**Type:** {row['type']}")
         st.write(f"**Description:** {row['description']}")
         st.write(f"**Location:** ({row['lat']}, {row['lon']})")
+
+if st.button("Subscribe"):
+    locationForm()
