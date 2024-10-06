@@ -91,7 +91,7 @@ if st.button("Help from an Agent") and not st.session_state.agent:
     #st.write(st.session_state.chat_id)
 
 if st.session_state.get("agent"):
-    st.write("# Talk to Despair")
+    st.write("# Talk to DaddyDiz")
     
     # message history
     for message in st.session_state.messages:

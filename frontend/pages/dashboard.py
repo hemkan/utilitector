@@ -2,6 +2,18 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pydeck as pdk
+
+from streamlit_cookies_controller import CookieController
+controller = CookieController()
+st.session_state.storeduser = controller.get("storeduser")
+if st.session_state.storeduser == None:
+    st.session_state.storeduser = ""
+
+st.session_state.storedtoken = controller.get("storedtoken")
+if st.session_state.storedtoken == None:
+    st.session_state.storedtoken = ""
+
+
 st.set_page_config(layout="wide")
 chart_data = pd.DataFrame(
     np.random.randn(1000, 2) / [1, 1] + [37.76, -122.4],
