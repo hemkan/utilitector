@@ -6,6 +6,7 @@ import pycountry
 from geopy import Nominatim, Location
 from geopy.extra.rate_limiter import RateLimiter
 from streamlit_cookies_controller import CookieController
+import requests
 
 st.set_page_config(layout="wide")
 
@@ -37,6 +38,13 @@ json_data = '''[
 ]'''
 
 data = json.loads(json_data)
+
+# endpoint to get subscribed incidents
+data = requests.get("http://localhost:8080/api/dashboard/subscriptions").json()
+
+st.write("## Subscribed Incidents")
+st.write("You are currently subscribed to the following incidents:")
+st.write(data)
 
 chart_data = pd.DataFrame(data)
 
