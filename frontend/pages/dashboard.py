@@ -3,7 +3,7 @@ import pandas as pd
 import pydeck as pdk
 import json
 
-
+st.write("## Welcome To Dashboard")
 json_data = '''[
     {"GeoLocationCoordinates": {"latitude": 37.76, "longitude": -122.4}, "type": "Earthquake", "description": "Golden Gate Park, a large urban park with gardens, trails, and recreational areas."},
     {"GeoLocationCoordinates": {"latitude": 37.78, "longitude": -122.42}, "type": "Earthquake", "description": "The Exploratorium, a museum of science, art, and human perception."},
