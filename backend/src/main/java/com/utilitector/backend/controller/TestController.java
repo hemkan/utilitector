@@ -47,13 +47,7 @@ public class TestController {
         }).toList());
     }
 	
-	@Autowired private Clustering cl;
 	
-	@GetMapping("/cluster")
-	public ResponseEntity<TestDataResponse> posss() {
-		cl.doSparkThing();
-		return null;
-	}
 
     @PostMapping("/autht")
     public ResponseEntity<Boolean> trueIfAuthenticated(@RequestBody TestTAuthRequest req) {
