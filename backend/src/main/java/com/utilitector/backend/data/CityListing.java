@@ -3,14 +3,13 @@ package com.utilitector.backend.data;
 import com.opencagedata.jopencage.model.JOpenCageComponents;
 import com.opencagedata.jopencage.model.JOpenCageResult;
 import com.utilitector.backend.document.UserData;
-import com.utilitector.backend.document.UserData.UserId;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Document("cities") @Data
 public class CityListing {
@@ -20,20 +19,21 @@ public class CityListing {
 	private @Id MercatorCoordinates coords;
 	private LatitudeLongitude latLng;
 	@DBRef
-	private List<UserData> subscribedUsers;
+	private Set<UserData> subscribedUsers;
 	
-	public CityListing(String name, String country, String postcode, MercatorCoordinates coords, LatitudeLongitude latLng) {
-		this.name = name;
-		this.country = country;
-		this.postcode = postcode;
-		this.coords = coords;
-		this.latLng = latLng;
-		this.subscribedUsers = List.of();
+	public CityListing() {
+		this.subscribedUsers = new HashSet<>(1);
 	}
 	
 	public static CityListing fromJOpenCageResult(JOpenCageResult res) {
 		JOpenCageComponents c = res.getComponents();
-		return new CityListing(c.getCity(), c.getCountry(), c.getPostcode(), MercatorCoordinates.from(res.getAnnotations().getMercator()), LatitudeLongitude.of(res.getGeometry()), new ArrayList<>(1));
+		CityListing cityListing = new CityListing();
+		cityListing.setName(c.getCity());
+		cityListing.setCoords(MercatorCoordinates.from(res.getAnnotations().getMercator()));
+		cityListing.setCountry(c.getCountry());
+		cityListing.setPostcode(c.getPostcode());
+		cityListing.setLatLng(LatitudeLongitude.of(res.getGeometry()));
+		return cityListing;
 	}
 	
 	@Override

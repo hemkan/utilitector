@@ -23,7 +23,7 @@ for (state_name, default) in (
 
 
 def frag_formComponent():
-	st.write("# File a Report")
+	st.write("## File a Report")
 	func_resolveLocation = locationForm()
 	
 	# # TODO: ask user for enter location manually (google maps/api for similar format) or use geolocation

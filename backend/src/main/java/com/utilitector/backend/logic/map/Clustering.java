@@ -9,6 +9,7 @@ import com.utilitector.backend.data.LatitudeLongitude;
 import com.utilitector.backend.data.MercatorCoordinates;
 import com.utilitector.backend.document.Report;
 import com.utilitector.backend.util.Util;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.geometry.enclosing.EnclosingBall;
 import org.apache.commons.math3.geometry.enclosing.WelzlEncloser;
 import org.apache.commons.math3.geometry.euclidean.twod.DiskGenerator;
@@ -17,7 +18,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
-import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
@@ -27,7 +27,14 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class Clustering {
@@ -44,7 +51,7 @@ public class Clustering {
 		                    .master("local")
 		                    .config("spark.mongodb.read.connection.uri", MONGO_URL)
 		                    .config("spark.mongodb.write.connection.uri", MONGO_URL)
-							.config("spark.driver.host", "localhost")
+		                    .config("spark.driver.host", "localhost")
 		                    .getOrCreate();
 	}
 	
@@ -54,23 +61,43 @@ public class Clustering {
 	}
 	
 	@Cacheable(Constants.CACHE_CLUSTERS)
-	public List<List<DoublePoint>> getAllClusters() {
+	public Map<Cluster<DoublePoint>, List<Report>> getAllClusters() {
 		Dataset<Row> reportData = getAllReports();
 		
-		var reportLocations = reportData.as(Encoders.bean(Report.class))
-		                                .map((MapFunction<Report, LatitudeLongitude>) Report::getLocation, Encoders.bean(LatitudeLongitude.class))
-		                                .toJavaRDD()
-		                                .map(Util::toMercator)
-		                                .map(MercatorCoordinates::toDoublePoint)
-		                                .collect();
-		
-		var thing = new DBSCANClusterer<DoublePoint>(0.4D, 5);
-		List<Cluster<DoublePoint>> cluster = thing.cluster(reportLocations);
+		var reportsByType = reportData.as(Encoders.bean(Report.class))
+		                              .collectAsList()
+		                              .stream()
+		                              .collect(Collectors.groupingBy(Report::getType, Collectors.toMap(re -> re.getLocation().toDoublePoint(), Function.identity())));
 		
 		
-		return cluster.stream()
-		              .map(Cluster::getPoints)
-		              .toList();
+		var thing = new DBSCANClusterer<DoublePoint>(0.4D, 3);
+		
+		Map<Cluster<DoublePoint>, List<Report>> out = new HashMap<>();
+		
+		for (Entry<String, Map<DoublePoint, Report>> typeToReport : reportsByType.entrySet()) {
+			// convert to Cluster
+			Map<DoublePoint, Report> pointToReport = typeToReport.getValue();
+			
+			List<DoublePoint> points = pointToReport.keySet()
+			                                        .stream()
+			                                        .map(Util::toMercator)
+			                                        .map(MercatorCoordinates::toDoublePoint)
+			                                        .toList();
+			
+			List<Cluster<DoublePoint>> clusters = thing.cluster(points);
+			
+			// Map the clusters to the reports they came from
+			var clustersToReports = clusters.stream()
+			                                .flatMap(cluster -> {
+				                                return cluster.getPoints().stream().map(pt -> Pair.of(cluster, pt));
+			                                })
+			                                .map(pair -> Pair.of(pair.getLeft(), pointToReport.get(pair.getRight())))
+			                                .collect(Collectors.groupingBy(Pair::getLeft, Collectors.mapping(Pair::getRight, Collectors.toList())));
+			
+			out.putAll(clustersToReports);
+		}
+		
+		return out;
 	}
 	
 	private Dataset<Row> getAllReports() {
@@ -82,12 +109,11 @@ public class Clustering {
 	}
 	
 	@Cacheable(Constants.CACHE_CIRCLE)
-	public EnclosingBall<Euclidean2D, Vector2D> getCircleForCluster(List<DoublePoint> c) {
+	public EnclosingBall<Euclidean2D, Vector2D> getCircleForCluster(Collection<DoublePoint> c) {
 		List<Vector2D> list = c.stream().map(p -> new Vector2D(p.getPoint())).toList();
 		var welzl = new WelzlEncloser<>(0.01, new DiskGenerator());
 		return welzl.enclose(list);
 	}
-	
 	
 	
 	public CityListing closestCity(LatitudeLongitude latLng) {
