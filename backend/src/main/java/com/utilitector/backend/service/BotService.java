@@ -80,7 +80,7 @@ public class BotService {
 
         // Get ChatGPT response based on full message history
         List<BotMessage> messageHistory = msgRepo.findAllByIdChatIdOrderByIdMessageIndex(savedChat.getId());
-        String response = gptPrompt(messageHistory);
+        String response = dummyPrompt(messageHistory);
 
         // Save ChatGPT response
         BotMessage gptMessage = new BotMessage();
@@ -102,6 +102,10 @@ public class BotService {
         BotMessageResponse msgResponse = new BotMessageResponse();
         msgResponse.setContent(savedGptMessage.getContent());
         return msgResponse;
+    }
+
+    private String dummyPrompt(List<BotMessage> messageHistory) {
+        return "This is a dummy message. It's here to save money by not sending a request to OpenAI.";
     }
 
     private String gptPrompt(List<BotMessage> messageHistory) {
