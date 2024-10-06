@@ -36,5 +36,4 @@ public class ReportController {
         return ResponseEntity.ok(reportResponse);
     }
     
-    
 }
