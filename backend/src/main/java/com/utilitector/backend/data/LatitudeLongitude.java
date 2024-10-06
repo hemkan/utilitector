@@ -19,4 +19,11 @@ public class LatitudeLongitude {
 		latitudeLongitude.setLongitude(ll.getLng());
 		return latitudeLongitude;
 	}
+	
+	public static LatitudeLongitude of(double latitude,double longitude) {
+		var ret = new LatitudeLongitude();
+		ret.setLatitude(latitude);
+		ret.setLongitude(longitude);
+		return ret;
+	}
 }

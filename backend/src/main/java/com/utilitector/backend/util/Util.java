@@ -25,6 +25,12 @@ public final class Util {
 		return new MercatorCoordinates(x, y);
 	}
 	
+	public static LatitudeLongitude mercatorToLatLon(double x, double y) {
+		double lon = x / EARTH_RADIUS;
+		double lat = Math.toDegrees(Math.atan(Math.sinh(y / EARTH_RADIUS)));
+		return LatitudeLongitude.of(lat, lon);
+	}
+	
 	public static MercatorCoordinates toMercator(DoublePoint pt) {
 		return latLonToMercator(pt.getPoint()[0], pt.getPoint()[1]);
 	}
@@ -33,4 +39,8 @@ public final class Util {
 		return latLonToMercator(ll.getLatitude(), ll.getLongitude());
 	}
 	
+	
+	public static LatitudeLongitude fromMercator(MercatorCoordinates coords) {
+		return mercatorToLatLon(coords.x(), coords.y());
+	}
 }
