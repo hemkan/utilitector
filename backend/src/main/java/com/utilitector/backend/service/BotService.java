@@ -80,6 +80,30 @@ public class BotService {
 
         // Get ChatGPT response based on full message history
         List<BotMessage> messageHistory = msgRepo.findAllByIdChatIdOrderByIdMessageIndex(savedChat.getId());
+        String response = gptPrompt(messageHistory);
+
+        // Save ChatGPT response
+        BotMessage gptMessage = new BotMessage();
+        gptMessage.setId(new BotMessageId(savedChat.getId(), nextIndex));
+        gptMessage.setContent(response);
+        gptMessage.setMadeByBot(true);
+        BotMessage savedGptMessage = msgRepo.save(gptMessage);
+
+        // Increment nextIndex
+        Optional<BotChat> chatOpt2 = chatRepo.findById(savedGptMessage.getId().getChatId());
+        if (chatOpt2.isEmpty())
+            System.err.println("A very weird error happened in BotService");
+        BotChat chat2 = chatOpt2.get();
+        chat2.setNextIndex(chat2.getNextIndex() + 1);
+        BotChat savedChat2 = chatRepo.save(chat);
+
+        // Prepare and return message
+        BotMessageResponse msgResponse = new BotMessageResponse();
+        msgResponse.setContent(savedGptMessage.getContent());
+        return msgResponse;
+    }
+
+    private String gptPrompt(List<BotMessage> messageHistory) {
         List<Message> gptMessages = new ArrayList<>();
         gptMessages.add(new SystemMessage("""
             YOU ARE **"DADDYDIZ"**, A HELPFUL AND KNOWLEDGEABLE CHATBOT DESIGNED EXCLUSIVELY TO ASSIST USERS IN NAVIGATING THE DISASTERDADDY WEBSITE. YOU PROVIDE USERS WITH DETAILED GUIDANCE ON HOW TO REPORT INCIDENTS AFFECTING THEIR LOCAL COMMUNITY AND HELP THEM MAKE INFORMED CHOICES ABOUT WHAT TO INCLUDE IN THEIR REPORTS. YOU DO NOT PROVIDE ANY HELP BEYOND THE FUNCTIONALITY OF THE DISASTERDADDY WEBSITE.
@@ -165,25 +189,6 @@ public class BotService {
         }
         Prompt prompt = new Prompt(gptMessages);
         String response = chatClient.prompt(prompt).call().chatResponse().getResult().getOutput().getContent();
-    
-        // Save ChatGPT response
-        BotMessage gptMessage = new BotMessage();
-        gptMessage.setId(new BotMessageId(savedChat.getId(), nextIndex));
-        gptMessage.setContent(response);
-        gptMessage.setMadeByBot(true);
-        BotMessage savedGptMessage = msgRepo.save(gptMessage);
-
-        // Increment nextIndex
-        Optional<BotChat> chatOpt2 = chatRepo.findById(savedGptMessage.getId().getChatId());
-        if (chatOpt2.isEmpty())
-            System.err.println("A very weird error happened in BotService");
-        BotChat chat2 = chatOpt2.get();
-        chat2.setNextIndex(chat2.getNextIndex() + 1);
-        BotChat savedChat2 = chatRepo.save(chat);
-
-        // Prepare and return message
-        BotMessageResponse msgResponse = new BotMessageResponse();
-        msgResponse.setContent(savedGptMessage.getContent());
-        return msgResponse;
+        return response;
     }
 }
