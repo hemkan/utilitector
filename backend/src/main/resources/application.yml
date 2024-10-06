@@ -1,0 +1,20 @@
+spring:
+  config:
+    import:
+      'file:./secrets.yml'
+  application:
+    name: 'Utilitector Backend'
+#  jpa:
+#    database: postgresql
+  data:
+    mongodb:
+      database: main
+  web:
+    resources:
+      static-locations: 'classpath:/static'
+  mvc:
+    static-path-pattern: "/**"
+server:
+  port: 8080
+  servlet:
+    context-path: '/api'

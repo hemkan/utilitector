@@ -1,0 +1,80 @@
+import json
+import yaml
+import streamlit as st
+import requests
+import hashlib
+from urllib.parse import urlencode
+import webbrowser
+import base64
+from streamlit_cookies_controller import CookieController
+
+controller = CookieController()
+
+# Load config file
+with open('config.yaml', 'r', encoding='utf-8') as file:
+    config = yaml.load(file, Loader=yaml.SafeLoader)
+
+st.set_page_config(
+    page_title="Utilitector",
+    page_icon="",
+)
+
+if 'login' not in st.session_state:
+    st.session_state["login"] = False
+
+if 'register' not in st.session_state:
+    # add it to the session state
+    st.session_state["register"] = True
+
+if 'storeduser' not in st.session_state:
+    st.session_state.storeduser = controller.get('storeduser')
+    if st.session_state.storeduser == None:
+        st.session_state.storeduser = ""
+
+if 'storedtoken' not in st.session_state:
+    st.session_state.storedtoken = controller.get('storedtoken')
+    if st.session_state.storedtoken == None:
+        st.session_state.storedtoken = ""
+
+# Login button
+if st.button('Login'):
+    st.session_state["login"] = True
+    st.session_state["register"] = False
+
+if st.button('Register'):
+    st.session_state["register"] = True
+    st.session_state["login"] = False
+
+
+if st.session_state["register"]:
+    username = st.text_input('Username')
+    password = st.text_input('Password', type='password')
+    hasher = hashlib.sha256()
+    hasher.update(password.encode())
+    passwordHash = hasher.digest()
+    passwordHash = base64.b64encode(passwordHash).decode('ascii')
+    register = {
+        "username": username,
+        "passwordHash": passwordHash
+    }
+    register = json.dumps(register)
+    if st.button('Continue'):
+        # Authenticate user
+        response = requests.post("http://localhost:8080/api/auth/register", data=register, headers={
+            "Content-Type": "application/json"
+        })
+        if not response.ok:
+            st.error("Error attempting to register user. Username is likely taken.")
+        else:
+            st.success("User created!")
+        
+
+
+if st.session_state["login"]:
+    
+    
+    username = st.text_input('Username')
+    password = st.text_input('Password', type='password')
+    if st.button('Continue'):
+        # Check auth
+        pass
