@@ -1,90 +1,156 @@
-import streamlit as st
 import json
-import requests 
+
+import geopy
+import pycountry
+import requests
+import streamlit as st
+from geopy.extra.rate_limiter import RateLimiter
+from geopy.geocoders import Nominatim
+
+# initialize session state things
+for (state_name, default) in (
+		('form', False),
+		('agent', False),
+		('messages', []),
+		('loc_country', None)
+):
+	if state_name not in st.session_state:
+		st.session_state[state_name] = default
+
+def getCountries():
+	return pycountry.countries
+	
+
+def getSubdivisions():
+	return pycountry.subdivisions
+
+@st.cache_data
+def cached_countrySorted():
+	l = sorted([el.name for el in iter(getCountries())])
+	l.remove('United States')
+	l.insert(0, 'United States')
+	return l
+
+
+def frag_formComponent():
+	st.write("# File a Report")
+	st.subheader("Location")
+	
+	street = st.text_input("Street")
+	city = st.text_input("City")
+	
+	
+	@st.fragment
+	def frag_stateProvince():
+		country = getCountries().get(name=st.session_state.loc_country)
+		print(country)
+		subdivisions: set[any] = getSubdivisions().get(country_code=country.alpha_2)
+		if subdivisions:
+			print(subdivisions)
+			return st.selectbox(
+				"State/Province",
+				options=sorted([el.name for el in subdivisions]),
+				key='loc_stateprovince'
+			)
+	
+	province = frag_stateProvince() if (st.session_state.loc_country) else ""
+	
+	country = st.selectbox(
+		"Country",
+		options=cached_countrySorted(),
+		key='loc_country'
+		# index=0,
+		# placeholder="United States"
+	)
+	
+	# # TODO: ask user for enter location manually (google maps/api for similar format) or use geolocation
+	# st.selectbox("Location", ["Current Location", ____])
+	
+	report_type = st.selectbox("Type", ["Electricity", "Water", "Gas"])
+	description = st.text_area("Description")
+	
+	def onSubmit(street, city, province, country):
+		location = getLatLng(street, city, province, country)
+		
+		report_data = {
+			"location": location,
+			"type": report_type,
+			"description": description
+		}
+		
+		report_json = json.dumps(report_data)
+		st.write(report_json)
+		
+		# TODO: endpoint w report_json
+		# response = requests.post("http://localhost:8080/api/report/submit", data=report_json,
+		# 						 headers={"Content-Type": "application/json"})
+		st.write(response)
+	
+	st.button("Submit", on_click=onSubmit, args=(street, city, province, country))
+
+
+
 # import googlemaps
 # from streamlit_geolocation import streamlit_geolocation
-
 # with open('../pages/config.yaml', 'r', encoding='utf-8') as file:
 #     config = yaml.load(file, Loader=yaml.SafeLoader)
-
 # gmaps = googlemaps.Client(config['google']['api_key'])
 # location = streamlit_geolocation()
 
-if 'form' not in st.session_state:
-    st.session_state.form = False
+def getLatLng(street, city, state_province, country):
+	geolocator = Nominatim(user_agent="GTA Lookup")
+	geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+	loc: geopy.Location = geocode(street + ", "
+								  + city + ", "
+								  + ((state_province + ", ") if state_province else "")
+								  + country)
+	
+	print(loc.point)  # TODO remove after debug
+	return {'latitude': loc.latitude, 'longitude': loc.longitude}
 
-if 'agent' not in st.session_state:
-    st.session_state.agent = False
 
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
 
 st.write("# Report")
 
 if 'chat_id' not in st.session_state:
-    st.session_state.chat_id = None
+	st.session_state.chat_id = None
 
 if st.button("File a Report Manually"):
-    st.session_state.form = True
-    st.session_state.agent = False
+	st.session_state.form = True
+	st.session_state.agent = False
 
 if st.button("Help from an Agent"):
-    st.session_state.agent = True
-    st.session_state.form = False
-
-    # TODO: endpoint for get a chat_id
-    st.session_state.chat_id = requests.post("http://localhost:8080/api/bot/new-chat").json()["id"]
-    st.session_state.first_message = requests.post("http://localhost:8080/api/bot/new-chat").json()["firstMessage"]
-    # chat_id = requests.post("http://localhost:8080/bot/new-chat").json()["id"]
-    st.write(st.session_state.chat_id)
-    st.write(st.session_state.first_message)
-
-
+	st.session_state.agent = True
+	st.session_state.form = False
+	
+	# TODO: endpoint for get a chat_id
+	st.session_state.chat_id = requests.post("http://localhost:8080/api/bot/new-chat").json()["id"]
+	st.session_state.first_message = requests.post("http://localhost:8080/api/bot/new-chat").json()["firstMessage"]
+	# chat_id = requests.post("http://localhost:8080/bot/new-chat").json()["id"]
+	st.write(st.session_state.chat_id)
+	st.write(st.session_state.first_message)
 
 if st.session_state.get("agent"):
-    st.write("# Talk to Despair")
-    
-    # message history
-    st.write(f"Despair: {st.session_state.first_message}")
-    for message in st.session_state.messages:
-        st.write(message)
-
-    user_message = st.text_input("Message")
-
-    if st.button("Send"):
-        if user_message != "":
-            st.session_state.messages.append(f"You: {user_message}")
-            message = json.dumps({"id": st.session_state.chat_id, "content": user_message})
-            # st.write(message)
-            response = requests.post("http://localhost:8080/api/bot/message", data=message, headers={"Content-Type": "application/json"})
-            st.session_state.messages.append(response.json()["content"])
-            st.session_state.user_input = ""
-
+	st.write("# Talk to Despair")
+	
+	# message history
+	st.write(f"Despair: {st.session_state.first_message}")
+	for message in st.session_state.messages:
+		st.write(message)
+	
+	user_message = st.text_input("Message")
+	
+	if st.button("Send"):
+		if user_message != "":
+			st.session_state.messages.append(f"You: {user_message}")
+			message = json.dumps({"id": st.session_state.chat_id, "content": user_message})
+			# st.write(message)
+			response = requests.post("http://localhost:8080/api/bot/message", data=message,
+									 headers={"Content-Type": "application/json"})
+			st.session_state.messages.append(response.json()["content"])
+			st.session_state.user_input = ""
 
 if st.session_state.get("form"):
-    st.write("# File a Report")
-
-    location = st.text_input("Location")
-
-
-    # # TODO: ask user for enter location manually (google maps/api for similar format) or use geolocation
-    # st.selectbox("Location", ["Current Location", ____])
-
-    type = st.selectbox("Type", ["Electricity", "Water", "Gas"])
-    description = st.text_area("Description")
-    
-    if st.button("Submit"):
-        report_data = {
-            "location": location,
-            "type": type,
-            "description": description
-        }
-
-        report_json = json.dumps(report_data)
-        st.write(report_json)
-
-        # TODO: endpoint w report_json
-        response = requests.post("http://localhost:8080/api/report/submit", data=report_json, headers={"Content-Type": "application/json"})
-        st.write(response)
+	frag_formComponent()
 
 
