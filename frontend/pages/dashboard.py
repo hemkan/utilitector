@@ -7,6 +7,8 @@ from geopy import Nominatim, Location
 from geopy.extra.rate_limiter import RateLimiter
 from streamlit_cookies_controller import CookieController
 
+st.set_page_config(layout="wide")
+
 if 'loc_country' not in st.session_state:
   st.session_state.loc_country = None
 
@@ -77,7 +79,6 @@ if st.session_state.storedtoken == None:
     st.session_state.storedtoken = ""
 
 
-st.set_page_config(layout="wide")
 
 
 st.pydeck_chart(
