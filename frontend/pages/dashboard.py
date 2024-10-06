@@ -57,7 +57,7 @@ data = getData()
 
 st.write("## Subscribed Incidents")
 st.write("You are currently subscribed to the following incidents:")
-st.write(data)
+# st.write(data)
 
 chart_data = pd.DataFrame(data)
 
@@ -82,7 +82,7 @@ colors = defaultdict(lambda: [255,0,0], {
 
 chart_data['color'] = chart_data['type'].apply(lambda x: colors[x])
 
-print(chart_data)
+# print(chart_data)
 
 st.write("### Reported Incident Locations")
 # monitoringLocation = "Alabama"
@@ -124,7 +124,7 @@ st.pydeck_chart(
                 opacity = .05,
                 width = 500,
                 get_height = "height",
-                get_radius=20,
+                get_radius=200,
                 pickable=True,
             ),
         ],
