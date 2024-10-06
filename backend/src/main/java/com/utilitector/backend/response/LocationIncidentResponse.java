@@ -3,10 +3,10 @@ package com.utilitector.backend.response;
 import lombok.Data;
 
 @Data
-public class UserReportResponse {
-    private Long id;
+public class LocationIncidentResponse {
+    private String location;
 
     private String type;
 
-    private String description;
+    private Long total;
 }

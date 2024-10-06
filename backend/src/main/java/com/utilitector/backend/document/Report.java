@@ -1,19 +1,16 @@
 package com.utilitector.backend.document;
 
-import org.springframework.data.annotation.Id;
+import com.utilitector.backend.data.GeolocationCoordinates;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Document("userreports")
+@Document("reports")
 @Data
-public class UserReport {
-    @Id
-    private Long id;
-
+public class Report {
     private String type;
 
     private String description;
     
-    private String location; //TODO
+    private GeolocationCoordinates location; //TODO
 }
