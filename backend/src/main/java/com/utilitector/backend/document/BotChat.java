@@ -3,16 +3,13 @@ package com.utilitector.backend.document;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Document("botmessages")
+@Document("botchats")
 @Data
-public class BotMessage {
+public class BotChat {
     @Id
-    private BotMessageId id;
+    private Long id;
 
-    private String content;
-
-    private Boolean madeByBot;
+    private Long nextIndex;
 }

@@ -26,8 +26,7 @@ public class BotController {
 
     @PostMapping("/message")
     public ResponseEntity<BotMessageResponse> sendMessage(@RequestBody BotMessageRequest messageReq) {
-        BotMessageResponse messageResponse = new BotMessageResponse();
-        messageResponse.setContent(messageReq.getContent() + " is what you sent");
+        BotMessageResponse messageResponse = botService.sendMessage(messageReq);
         return ResponseEntity.ok(messageResponse);
     }
 
