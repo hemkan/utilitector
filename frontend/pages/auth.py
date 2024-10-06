@@ -41,8 +41,8 @@ if 'register' not in st.session_state:
 if st.session_state["login"]:
     st.write("## Login")
     st.session_state["register"] = False
-    login = st.text_input('Email2')
-    password = st.text_input('Password', type='password')
+    login = st.text_input('Email' , key='Login_Email')
+    password = st.text_input('Password', type='password', key='Login_Password')
     if st.button('Continue'):
         # Authenticate user
         token = GetToken(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
@@ -59,9 +59,9 @@ if st.session_state["login"]:
 if st.session_state["register"]:
     st.write("## Register")
     st.session_state["login"] = False
-    username = st.text_input('Email')
-    pass_word = st.text_input('Password2', type='password')
-    if st.button('Continue2'):
+    username = st.text_input('Email', key='register_email')
+    pass_word = st.text_input('Password', type='password')
+    if st.button('Continue', key='register_continue'):
         # Register user
         token = Database(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
         token.signup(email=username, password=pass_word, connection='Username-Password-Authentication')
