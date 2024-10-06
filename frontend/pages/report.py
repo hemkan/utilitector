@@ -70,7 +70,7 @@ if st.session_state.get("form"):
     # # TODO: ask user for enter location manually (google maps/api for similar format) or use geolocation
     # st.selectbox("Location", ["Current Location", ____])
 
-    type = st.selectbox("Type", ["Electricity", "Water", "Gas"])
+    type = st.selectbox("Type", ["Electricity", "Water", "Gas", "Flooding", "Tornado", "Sewage", "Tremors", "Internet", "Other"])
     description = st.text_area("Description")
     
     if st.button("Submit"):
