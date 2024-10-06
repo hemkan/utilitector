@@ -1,23 +1,18 @@
+import json
 import yaml
 import streamlit as st
 import requests
+import hashlib
 from urllib.parse import urlencode
 import webbrowser
-from auth0.authentication import Database
-from auth0.authentication import GetToken
+import base64
+from streamlit_cookies_controller import CookieController
 
+controller = CookieController()
 
 # Load config file
 with open('config.yaml', 'r', encoding='utf-8') as file:
     config = yaml.load(file, Loader=yaml.SafeLoader)
-
-# Auth0 Configuration
-AUTH0_DOMAIN = config['auth0']['domain']
-CLIENT_ID = config['auth0']['client_id']
-CLIENT_SECRET = config['auth0']['client_secret']
-REDIRECT_URI = config['auth0']['redirect_uri']
-AUTH0_CALLBACK_URL = f"{REDIRECT_URI}?code={{code}}&state={{state}}"
-AUTH0_LOGOUT_URL = f"https://{AUTH0_DOMAIN}/v2/logout"
 
 st.set_page_config(
     page_title="Utilitector",
@@ -31,6 +26,16 @@ if 'register' not in st.session_state:
     # add it to the session state
     st.session_state["register"] = True
 
+if 'storeduser' not in st.session_state:
+    st.session_state.storeduser = controller.get('storeduser')
+    if st.session_state.storeduser == None:
+        st.session_state.storeduser = ""
+
+if 'storedtoken' not in st.session_state:
+    st.session_state.storedtoken = controller.get('storedtoken')
+    if st.session_state.storedtoken == None:
+        st.session_state.storedtoken = ""
+
 # Login button
 if st.button('Login'):
     st.session_state["login"] = True
@@ -41,21 +46,35 @@ if st.button('Register'):
     st.session_state["login"] = False
 
 
-if st.session_state["login"]:
-    username = st.text_input('Username')
-    password = st.text_input('Password', type='password')
-    if st.button('Continue'):
-        # Authenticate user
-        token = GetToken(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
-        token.login(username=username, password=password, realm='Username-Password-Authentication')
-        st.success('User authenticated successfully')
-
-
 if st.session_state["register"]:
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
+    hasher = hashlib.sha256()
+    hasher.update(password.encode())
+    passwordHash = hasher.digest()
+    passwordHash = base64.b64encode(passwordHash).decode('ascii')
+    register = {
+        "username": username,
+        "passwordHash": passwordHash
+    }
+    register = json.dumps(register)
     if st.button('Continue'):
-        # Register user
-        token = Database(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
-        token.signup(email=username, password=password, connection='Username-Password-Authentication')
-        st.success('User registered successfully')
+        # Authenticate user
+        response = requests.post("http://localhost:8080/api/auth/register", data=register, headers={
+            "Content-Type": "application/json"
+        })
+        if not response.ok:
+            st.error("Error attempting to register user. Username is likely taken.")
+        else:
+            st.success("User created!")
+        
+
+
+if st.session_state["login"]:
+    
+    
+    username = st.text_input('Username')
+    password = st.text_input('Password', type='password')
+    if st.button('Continue'):
+        # Check auth
+        pass
