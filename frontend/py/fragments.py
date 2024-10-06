@@ -6,6 +6,9 @@ from geopy.extra.rate_limiter import RateLimiter
 
 @st.fragment
 def locationForm():
+	if 'loc_location' not in st.session_state:
+		st.session_state.loc_location = None
+	
 	def getCountries():
 		return pycountry.countries
 	
