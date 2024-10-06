@@ -12,6 +12,8 @@ if 'agent' not in st.session_state:
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 
+if 'first_message' not in st.session_state:
+    st.session_state.first_message = "Hello, how can I help you today?"
 
 button_height = "40px" if st.session_state.form or st.session_state.agent else "40vh"
 
@@ -43,7 +45,7 @@ if left.button("File a Report Manually", use_container_width=True):
 if right.button("Help from an Agent", use_container_width=True):
     st.session_state.agent = True
     st.session_state.form = False
-    st.experimental_rerun()
+    st.rerun()
 
     st.session_state.chat_id = requests.post("http://localhost:8080/api/bot/new-chat").json()["id"]
     st.session_state.first_message = requests.post("http://localhost:8080/api/bot/new-chat").json()["firstMessage"]
@@ -77,7 +79,8 @@ if st.session_state.get("form"):
 
     location = st.text_input("Location")
 
-    type = st.selectbox("Type", ["Flood", "Fire", "Tornado", "Hurricane", "Other"])
+    type = st.selectbox("Type", ["Flood", "Fire", "Tornado", "Internet", "Water", "Tremors", "Electricity" "Sewage", "Gas", "Other"])
+
     description = st.text_area("Description")
     
     if st.button("Submit"):
