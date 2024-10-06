@@ -59,7 +59,7 @@ if st.session_state["register"]:
             st.error("Error attempting to register user. Username is likely taken.")
         else:
             st.success("User created!")
-            savecredentials(response.json()["user"], response.json()["token"])
+            savecredentials(response.json()["username"], response.json()["token"])
     
     if st.button('Login Instead'):
         st.session_state["login"] = True
@@ -78,7 +78,7 @@ if st.session_state["login"]:
             st.error("Login invalid. Check your password or make a new account.")
         else:
             st.success("Login successful!")
-            savecredentials(response.json()["user"], response.json()["token"])
+            savecredentials(response.json()["username"], response.json()["token"])
     if st.button('Register Instead'):
         st.session_state["register"] = True
         st.session_state["login"] = False
