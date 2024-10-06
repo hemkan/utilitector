@@ -85,7 +85,7 @@ if st.session_state["login"]:
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
     if st.button('Continue'):
-        response = requests.post("http://localhost:8080/api/auth/register", data=register, headers={
+        response = requests.post("http://localhost:8080/api/auth/login", data=register, headers={
             "Content-Type": "application/json"
         })
         if not response.ok:
