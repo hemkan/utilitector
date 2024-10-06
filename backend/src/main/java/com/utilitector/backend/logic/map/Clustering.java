@@ -18,6 +18,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
@@ -66,10 +67,9 @@ public class Clustering {
 		
 		var reportsByType = getReports();
 		
-		
-		var thing = new DBSCANClusterer<DoublePoint>(1000000, 3);
-		
 		Map<Cluster<DoublePoint>, List<Report>> out = new HashMap<>();
+		
+		var thing = new DBSCANClusterer<DoublePoint>(0.01, 3, new LatitudeScaledDistance());
 		
 		for (Entry<String, Map<DoublePoint, Report>> typeToReport : reportsByType.entrySet()) {
 			// convert to Cluster
@@ -77,8 +77,8 @@ public class Clustering {
 			
 			List<DoublePoint> points = pointToReport.keySet()
 			                                        .stream()
-			                                        .map(Util::toMercator)
-			                                        .map(MercatorCoordinates::toDoublePoint)
+//			                                        .map(Util::toMercator)
+//			                                        .map(MercatorCoordinates::toDoublePoint)
 			                                        .toList();
 			
 			List<Cluster<DoublePoint>> clusters = thing.cluster(points);
@@ -130,5 +130,28 @@ public class Clustering {
 		
 		var first = reverse.getResults().getFirst();
 		return CityListing.fromJOpenCageResult(first);
+	}
+	
+	public class LatitudeScaledDistance implements DistanceMeasure {
+		
+		@Override
+		public double compute(double[] point1, double[] point2) {
+			// Assuming points are in [longitude, latitude] format
+			double lon1 = point1[0];
+			double lat1 = point1[1];
+			double lon2 = point2[0];
+			double lat2 = point2[1];
+			
+			// Compute horizontal and vertical distance components
+			double deltaLon = lon1 - lon2;
+			double deltaLat = lat1 - lat2;
+			
+			// Scale horizontal distance component by latitude
+			double scaleFactor = Math.cos(Math.toRadians((lat1 + lat2) / 2));
+			double scaledDeltaLon = deltaLon * scaleFactor;
+			
+			// Calculate Euclidean distance with scaled longitude component
+			return Math.sqrt(scaledDeltaLon * scaledDeltaLon + deltaLat * deltaLat);
+		}
 	}
 }

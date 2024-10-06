@@ -54,7 +54,7 @@ data = getData()
 # data = json.loads(json_data)
 
 # endpoint to get subscribed incidents
-data = requests.get("http://localhost:8080/api/dashboard/subscriptions").json()
+# data = requests.get("http://localhost:8080/api/dashboard/subscriptions").json()
 
 st.write("## Subscribed Incidents")
 st.write("You are currently subscribed to the following incidents:")
