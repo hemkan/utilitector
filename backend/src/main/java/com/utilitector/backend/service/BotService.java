@@ -80,7 +80,7 @@ public class BotService {
 
         // Get ChatGPT response based on full message history
         List<BotMessage> messageHistory = msgRepo.findAllByIdChatIdOrderByIdMessageIndex(savedChat.getId());
-        String response = dummyPrompt(messageHistory);
+        String response = gptPrompt(messageHistory);
 
         // Save ChatGPT response
         BotMessage gptMessage = new BotMessage();

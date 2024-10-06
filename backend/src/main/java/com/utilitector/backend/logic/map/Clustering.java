@@ -22,6 +22,7 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -62,15 +63,11 @@ public class Clustering {
 	
 	@Cacheable(Constants.CACHE_CLUSTERS)
 	public Map<Cluster<DoublePoint>, List<Report>> getAllClusters() {
-		Dataset<Row> reportData = getAllReports();
 		
-		var reportsByType = reportData.as(Encoders.bean(Report.class))
-		                              .collectAsList()
-		                              .stream()
-		                              .collect(Collectors.groupingBy(Report::getType, Collectors.toMap(re -> re.getLocation().toDoublePoint(), Function.identity())));
+		var reportsByType = getReports();
 		
 		
-		var thing = new DBSCANClusterer<DoublePoint>(0.4D, 3);
+		var thing = new DBSCANClusterer<DoublePoint>(1000000, 3);
 		
 		Map<Cluster<DoublePoint>, List<Report>> out = new HashMap<>();
 		
@@ -98,6 +95,13 @@ public class Clustering {
 		}
 		
 		return out;
+	}
+	
+	public @NotNull Map<String, Map<DoublePoint, Report>> getReports() {
+		return getAllReports().as(Encoders.bean(Report.class))
+		                      .collectAsList()
+		                      .stream()
+		                      .collect(Collectors.groupingBy(Report::getType, Collectors.toMap(re -> re.getLocation().toDoublePoint(), Function.identity())));
 	}
 	
 	private Dataset<Row> getAllReports() {

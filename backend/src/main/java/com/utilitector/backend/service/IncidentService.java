@@ -30,13 +30,14 @@ public class IncidentService {
 	private IncidentsRepository repo;
 	
 	public void onIncident(Incident incident) {
-		repo.insert(incident);
+		incident = repo.insert(incident);
 		if (!cityRepo.existsById(incident.getCity().getCoords())) {
 			cityRepo.insert(incident.getCity());
 		} else {
+			final Incident finalIncident = incident;
 			cityRepo.findCityListingByCoords(incident.getCity().getCoords())
 			        .getSubscribedUsers()
-			        .forEach(user -> user.getSubscribedIncidents().add(incident));
+			        .forEach(user -> user.getSubscribedIncidents().add(finalIncident));
 		}
 	}
 	
