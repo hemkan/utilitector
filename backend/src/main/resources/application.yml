@@ -9,6 +9,11 @@ spring:
   data:
     mongodb:
       database: main
+  web:
+    resources:
+      static-locations: 'classpath:/static'
+  mvc:
+    static-path-pattern: "/**"
 server:
   port: 8080
   servlet:
