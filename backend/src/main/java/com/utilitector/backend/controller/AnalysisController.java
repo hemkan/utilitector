@@ -1,10 +1,9 @@
 package com.utilitector.backend.controller;
 
 import com.utilitector.backend.data.DCluster;
-import com.utilitector.backend.data.MercatorCoordinates;
 import com.utilitector.backend.logic.map.Clustering;
+import com.utilitector.backend.response.CalebTestAllResponse;
 import com.utilitector.backend.response.GetAllClustersResponse;
-import com.utilitector.backend.util.Util;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +28,20 @@ public class AnalysisController {
 		                    .toList();
 		
 		return ResponseEntity.ok(new GetAllClustersResponse(list));
+	}
+	
+	@GetMapping("/all")
+	public ResponseEntity<Object> getAllPoints() {
+		var locations = clusterer.getReports()
+		                         .values()
+		                         .stream()
+		                         .flatMap(map -> map.values().stream())
+//		                         .limit(50)
+		                         .toList();
+		
+		var res = new CalebTestAllResponse();
+		res.setLocations(locations);
+		return ResponseEntity.ok(res);
 	}
 	
 	
