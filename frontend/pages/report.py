@@ -52,6 +52,7 @@ if st.session_state.get("agent"):
     user_message = st.text_input("Message")
 
     if st.button("Send"):
+
         if user_message != "":
             st.session_state.messages.append(f"You: {user_message}")
             message = json.dumps({"id": st.session_state.chat_id, "content": user_message})
@@ -59,8 +60,8 @@ if st.session_state.get("agent"):
             response = requests.post("http://localhost:8080/api/bot/message", data=message, headers={"Content-Type": "application/json"})
             st.session_state.messages.append(response.json()["content"])
             st.session_state.user_input = ""
-            st.rerun()
-
+        st.rerun()
+    
 
 if st.session_state.get("form"):
     st.write("# File a Report")
