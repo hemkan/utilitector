@@ -5,13 +5,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Document("botmessages")
+@Document("credentials")
 @Data
-public class BotMessage {
+public class Credential {
     @Id
-    private BotMessageId id;
+    private Long id;
 
-    private String content;
+    private String username;
 
-    private Boolean madeByBot;
+    private String passwordHash;
+
+    private String token;
 }

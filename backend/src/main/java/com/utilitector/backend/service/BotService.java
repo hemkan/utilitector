@@ -95,6 +95,7 @@ public class BotService {
             System.err.println("A very weird error happened in BotService");
         BotChat chat2 = chatOpt2.get();
         chat2.setNextIndex(chat2.getNextIndex() + 1);
+        @SuppressWarnings("unused")
         BotChat savedChat2 = chatRepo.save(chat);
 
         // Prepare and return message
