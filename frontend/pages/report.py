@@ -167,7 +167,7 @@ def submit():
 
 
 
-# st.write("# Report")
+st.write("# Report")
 
 
 if 'form' not in st.session_state:
@@ -234,13 +234,10 @@ if st.session_state.get("agent"):
     for message in st.session_state.messages:
         st.write(message)
 
-    st.text_input("Message", key="widget")
 
     
-    # st.text_input("Message", key="widget", on_change=submit, placeholder="Type in a message and press ENTER")
-    # if st.session_state.usermessage:
-    if st.button("Send"):
-
+    st.text_input("Message", key="widget", on_change=submit, placeholder="Type in a message and press ENTER")
+    if st.session_state.usermessage:
         if st.session_state.usermessage != "":
             st.session_state.messages.append(f"\tYou: {st.session_state.usermessage}")
             message = json.dumps({"id": st.session_state.chat_id, "content": st.session_state.usermessage})
