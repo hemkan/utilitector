@@ -20,28 +20,28 @@ for (state_name, default) in (
 def frag_formComponent():
 	st.write("## File a Report")
 
-func_resolveLocation = locationForm()
-
-
-type = st.selectbox("Type", ["Flood", "Fire", "Tornado", "Internet", "Water", "Tremors", "Electricity", "Sewage", "Gas", "Other"])
-
-description = st.text_area("Description")
-
-if st.button("Submit"):
-	report_data = {
-		"location": func_resolveLocation(),
-		"type": type,
-		"description": description
-	}
+	func_resolveLocation = locationForm()
 	
-	report_json = json.dumps(report_data)
-	st.write(report_json)
 	
-	try:
-		response = requests.post("http://localhost:8080/api/report/submit", data=report_json, headers={"Content-Type": "application/json"})
-		st.success("Report submitted")
-	except:
-		st.error("Failed to submit report")
+	type = st.selectbox("Type", ["Flood", "Fire", "Tornado", "Internet", "Water", "Tremors", "Electricity", "Sewage", "Gas", "Other"])
+	
+	description = st.text_area("Description")
+	
+	if st.button("Submit"):
+		report_data = {
+			"location": func_resolveLocation(),
+			"type": type,
+			"description": description
+		}
+		
+		report_json = json.dumps(report_data)
+		st.write(report_json)
+		
+		try:
+			response = requests.post("http://localhost:8080/api/report/submit", data=report_json, headers={"Content-Type": "application/json"})
+			st.success("Report submitted")
+		except:
+			st.error("Failed to submit report")
 
 
 # import googlemaps
