@@ -61,9 +61,25 @@ if st.session_state["register"]:
             st.success("User created!")
             savecredentials(response.json()["id"], response.json()["token"])
     
-    if st.button('Login Instead'):
+    st.write("Already Have An Account?")
+    # link to login page
+    
+
+
+    if st.button('Login'):
         st.session_state["login"] = True
         st.session_state["register"] = False
+        st.rerun()
+    
+#     if st.button('Login Instead'):
+#         st.session_state["login"] = True
+#         st.session_state["register"] = False
+        
+
+    if st.button('Register'):
+        st.session_state["login"] = False
+        st.session_state["register"] = True
+        st.rerun()
         
 
 
@@ -79,6 +95,12 @@ if st.session_state["login"]:
         else:
             st.success("Login successful!")
             savecredentials(response.json()["id"], response.json()["token"])
-    if st.button('Register Instead'):
+    st.write("Don't Have An Account?")
+    # link to register page
+    
+
+    if st.button('Register'):
         st.session_state["register"] = True
         st.session_state["login"] = False
+        st.rerun()
+

@@ -4,3 +4,8 @@ backgroundColor="#27262C"
 secondaryBackgroundColor="#4044ED"
 textColor="#FFFFFF"
 font="sans serif"
+
+[client]
+toolbarMode = "auto"
+showErrorDetails = false
+

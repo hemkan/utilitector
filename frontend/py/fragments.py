@@ -16,6 +16,9 @@ if st.session_state.storedtoken == None:
 
 @st.fragment
 def locationForm():
+	if 'loc_location' not in st.session_state:
+		st.session_state.loc_location = None
+	
 	def getCountries():
 		return pycountry.countries
 	

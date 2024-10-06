@@ -15,6 +15,17 @@ st.set_page_config(initial_sidebar_state="collapsed", page_title="Utilitector")
 if 'authenticated' not in st.session_state:
     st.session_state["authenticated"] = False
 
+
+# if st.session_state.get("auth"):
+#     pages = ["Dashboard", "Report", "Logout"]
+# else:
+#     pages = ["Home", "Report", "Get Started"]
+
+# page = st_navbar(pages)
+# st.write(page)
+
+# page = st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
+
 if st.session_state.get("auth"):
     pages = ["Dashboard", "Report", "Logout"]
 else:
@@ -53,6 +64,7 @@ logo_path = os.path.join(parent_dir, "logo.svg")
 
 # if st.session_state.get("auth"):
 #     st.wrte(pages)
+
 # st.write(page)
 
 
@@ -69,6 +81,7 @@ with open('config.yaml', 'r', encoding='utf-8') as file:
 # AUTH0_LOGOUT_URL = f"https://{AUTH0_DOMAIN}/v2/logout"
 
 
+
 # functions = {
 #     "Home": pg.show_home,
 #     TDO: show for all nav?
@@ -76,6 +89,7 @@ with open('config.yaml', 'r', encoding='utf-8') as file:
 # go_to = functions.get(page)
 # if go_to:
 #     go_to()
+
 
 
 # if 'login' not in st.session_state:
