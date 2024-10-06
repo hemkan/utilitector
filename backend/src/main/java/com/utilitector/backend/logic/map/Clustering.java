@@ -29,18 +29,14 @@ import java.util.List;
 
 @Service
 public class Clustering {
-	
-	@Value("${spring.data.mongodb.uri}")
-	private String MONGO_URL;
-	
-	private SparkSession spark;
+	private final SparkSession spark;
 	
 	@Value("${spring.opencage.api-key}")
 	private String GEOCODER_KEY;
 	
 	private final JOpenCageGeocoder geocoder;
 	
-	public Clustering() {
+	public Clustering(@Value("${spring.data.mongodb.uri}") String MONGO_URL) {
 		geocoder = new JOpenCageGeocoder(GEOCODER_KEY);
 		spark = SparkSession.builder()
 		                    .master("local")

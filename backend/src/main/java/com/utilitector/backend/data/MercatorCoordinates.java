@@ -21,9 +21,4 @@ public record MercatorCoordinates(double x, double y) {
 		return new DoublePoint(new double[] {this.x(), this.y()});
 	}
 	
-	public LatitudeLongitude toLatitudeLongitude() {
-		LatitudeLongitude ll = new LatitudeLongitude();
-		
-		return ll;
-	}
 }

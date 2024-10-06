@@ -4,6 +4,7 @@ import com.utilitector.backend.data.Cluster;
 import com.utilitector.backend.data.MercatorCoordinates;
 import com.utilitector.backend.logic.map.Clustering;
 import com.utilitector.backend.response.GetAllClustersResponse;
+import com.utilitector.backend.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ public class AnalysisController {
 		var list = clusterer.getAllClusters()
 		                    .stream()
 		                    .map(clusterer::getCircleForCluster)
-		                    .map(ball -> new Cluster(ball.getRadius(), MercatorCoordinates.from(ball.getCenter()).toLatitudeLongitude(), ball.getSupportSize()))
+		                    .map(ball -> new Cluster(ball.getRadius(), Util.fromMercator(MercatorCoordinates.from(ball.getCenter())), ball.getSupportSize()))
 		                    .toList();
 		
 		return ResponseEntity.ok(new GetAllClustersResponse(list));
