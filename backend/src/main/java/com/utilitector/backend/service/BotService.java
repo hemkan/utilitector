@@ -189,6 +189,7 @@ public class BotService {
         }
         Prompt prompt = new Prompt(gptMessages);
         String response = chatClient.prompt(prompt).call().chatResponse().getResult().getOutput().getContent();
-        return response;
+        return response;    
     }
+
 }
