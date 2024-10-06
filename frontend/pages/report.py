@@ -79,7 +79,7 @@ if st.session_state.get("form"):
 
     location = st.text_input("Location")
 
-    type = st.selectbox("Type", ["Flood", "Fire", "Tornado", "Internet", "Water", "Tremors", "Electricity" "Sewage", "Gas", "Other"])
+    type = st.selectbox("Type", ["Flood", "Fire", "Tornado", "Internet", "Water", "Tremors", "Electricity", "Sewage", "Gas", "Other"])
 
     description = st.text_area("Description")
     
