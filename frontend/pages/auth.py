@@ -39,6 +39,8 @@ def savecredentials(user, token):
     controller.set("storedtoken", token)
 
 if st.session_state["register"]:
+    st.write("## Register")
+
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
     hasher = hashlib.sha256()
@@ -78,6 +80,8 @@ if st.session_state["register"]:
 
 
 if st.session_state["login"]:
+    st.write("## Login")
+
     username = st.text_input('Username')
     password = st.text_input('Password', type='password')
     if st.button('Continue'):
