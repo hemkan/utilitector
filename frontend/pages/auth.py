@@ -31,31 +31,45 @@ if 'register' not in st.session_state:
     # add it to the session state
     st.session_state["register"] = True
 
-# Login button
-if st.button('Login'):
-    st.session_state["login"] = True
-    st.session_state["register"] = False
 
-if st.button('Register'):
-    st.session_state["register"] = True
-    st.session_state["login"] = False
+# Register button
 
+# if st.button('Register'):
+#     st.session_state["register"] = True
+#     st.session_state["login"] = False
 
 if st.session_state["login"]:
-    username = st.text_input('Username')
+    st.write("## Login")
+    st.session_state["register"] = False
+    login = st.text_input('Email2')
     password = st.text_input('Password', type='password')
     if st.button('Continue'):
         # Authenticate user
         token = GetToken(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
-        token.login(username=username, password=password, realm='Username-Password-Authentication')
+        token.login(username=login, password=password, realm='Username-Password-Authentication')
         st.success('User authenticated successfully')
+    st.write("Don't Have An Account?")
+
+
+    if st.button('Register'):
+        st.session_state["login"] = False
+        st.session_state["register"] = True
 
 
 if st.session_state["register"]:
-    username = st.text_input('Username')
-    password = st.text_input('Password', type='password')
-    if st.button('Continue'):
+    st.write("## Register")
+    st.session_state["login"] = False
+    username = st.text_input('Email')
+    pass_word = st.text_input('Password2', type='password')
+    if st.button('Continue2'):
         # Register user
         token = Database(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
-        token.signup(email=username, password=password, connection='Username-Password-Authentication')
+        token.signup(email=username, password=pass_word, connection='Username-Password-Authentication')
         st.success('User registered successfully')
+
+    st.write("Already Have An Account?")
+
+
+    if st.button('Login'):
+        st.session_state["login"] = True
+        st.session_state["register"] = False
