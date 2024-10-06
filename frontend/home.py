@@ -4,6 +4,24 @@ import requests
 from urllib.parse import urlencode
 import webbrowser
 # from auth0.authentication import Database
+# from streamlit_navigation_bar import st_navbar
+
+st.set_page_config(initial_sidebar_state="collapsed", page_title="Utilitector")
+
+if 'authenticated' not in st.session_state:
+    st.session_state["authenticated"] = False
+
+# if st.session_state.get("auth"):
+#     pages = ["Dashboard", "Report", "Logout"]
+# else:
+#     pages = ["Home", "Report", "Get Started"]
+
+# page = st_navbar(pages)
+# st.write(page)
+
+# page = st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
+# st.write(page)
+
 
 # Load config file
 with open('config.yaml', 'r', encoding='utf-8') as file:
@@ -17,10 +35,7 @@ with open('config.yaml', 'r', encoding='utf-8') as file:
 # AUTH0_CALLBACK_URL = f"{REDIRECT_URI}?code={{code}}&state={{state}}"
 # AUTH0_LOGOUT_URL = f"https://{AUTH0_DOMAIN}/v2/logout"
 
-st.set_page_config(
-    page_title="Utilitector",
-    page_icon="",
-)
+
 
 # if 'login' not in st.session_state:
 #     st.session_state["login"] = False

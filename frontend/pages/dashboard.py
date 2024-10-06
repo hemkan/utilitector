@@ -3,6 +3,16 @@ import pandas as pd
 import pydeck as pdk
 import json
 
+# TODO: initialize this 
+# if st.session_state["authenticated"]:
+#     st.write("## Welcome to the Dashboard")
+# else:
+#     st.switch_page('./auth.py')
+
+
+st.write("# Dashboard")
+
+# TODO: profile info?
 
 json_data = '''[
     {"GeoLocationCoordinates": {"latitude": 37.76, "longitude": -122.4}, "type": "Earthquake", "description": "Golden Gate Park, a large urban park with gardens, trails, and recreational areas."},
@@ -19,10 +29,10 @@ json_data = '''[
 
 data = json.loads(json_data)
 
-chat_data = pd.DataFrame(data)
+chart_data = pd.DataFrame(data)
 
-chat_data['lat'] = chat_data['GeoLocationCoordinates'].apply(lambda x: x['latitude'])
-chat_data['lon'] = chat_data['GeoLocationCoordinates'].apply(lambda x: x['longitude'])
+chart_data['lat'] = chart_data['GeoLocationCoordinates'].apply(lambda x: x['latitude'])
+chart_data['lon'] = chart_data['GeoLocationCoordinates'].apply(lambda x: x['longitude'])
 
 colors = {
     "Earthquake": [255, 0, 0],
@@ -33,13 +43,13 @@ colors = {
     "Other": [0, 255, 255],
 }
 
-chat_data['color'] = chat_data['type'].apply(lambda x: colors[x])
+chart_data['color'] = chart_data['type'].apply(lambda x: colors[x])
 
-st.write("## Reported Incident Locations")
-monitoringLocation = "Alabama"
+st.write("### Reported Incident Locations")
+# monitoringLocation = "Alabama"
 
-# TODO: endpoint for getting UserData.monitoring
-st.write(f"This map shows the locations of reported incidents in {monitoringLocation}.")
+# # TODO: endpoint for getting UserData.monitoring
+# st.write(f"This map shows the locations of reported incidents in {monitoringLocation}.")
 
 st.pydeck_chart(
     pdk.Deck(
@@ -53,7 +63,7 @@ st.pydeck_chart(
         layers=[
             pdk.Layer(
                 "ScatterplotLayer",
-                data=chat_data,
+                data=chart_data,
                 get_position="[lon, lat]",
                 get_fill_color="color",
                 get_radius=200, 
@@ -65,5 +75,14 @@ st.pydeck_chart(
     height=550,
 )
 
+# display in table format - debug
+# chart_data['latitute'] = chart_data['lat']
+# chart_data['longitude'] = chart_data['lon']
+# st.write(chart_data[['type', 'description', 'latitute', 'longitude']])
 
+for index, row in chart_data.iterrows():
+    with st.expander(f"{row['type']} at lat: {row['lat']}, lon: {row['lon']}"): # EXTRA: reverse geocode to get real location
 
+        st.write(f"**Type:** {row['type']}")
+        st.write(f"**Description:** {row['description']}")
+        st.write(f"**Location:** ({row['lat']}, {row['lon']})")

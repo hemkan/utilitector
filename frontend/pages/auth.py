@@ -52,6 +52,7 @@ if st.session_state["login"]:
         token = GetToken(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
         token.login(username=login, password=password, realm='Username-Password-Authentication')
         st.success('User authenticated successfully')
+        st.session_state["authenticated"] = True
     st.write("Don't Have An Account?")
 
 
@@ -70,9 +71,11 @@ if st.session_state["register"]:
         # Register user
         token = Database(AUTH0_DOMAIN, CLIENT_ID, CLIENT_SECRET)
         token.signup(email=username, password=pass_word, connection='Username-Password-Authentication')
-        st.success('User registered successfully')
+        st.success('User registered successfully. Please login.')
 
     st.write("Already Have An Account?")
+    # link to login page
+    
 
 
     if st.button('Login'):
